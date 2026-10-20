@@ -1,0 +1,58 @@
+{
+  "id": "asd",
+  "name": "Advice and Scenarios Database (ASD)",
+  "description": "ICES advice records and their catch scenario tables and notes, from the ICES Advice and Scenarios Database.",
+  "base_url": "https://asd.ices.dk/API",
+  "website": "https://asd.ices.dk",
+  "docs": "https://asd.ices.dk/API/docs/swagger/index.html",
+  "spec": "https://asd.ices.dk/API/docs/swagger/v1/swagger.json",
+  "packages": ["icesASD"],
+  "notes": [
+    {
+      "topic": "Operations that change data",
+      "observation": "`createAndAdviceFromSAGRecord` and `pushCatchOptionTableToAdvice` change data but are GET operations, so they can be triggered by opening a link (or by a link checker or browser prefetch). They are not called by this check.",
+      "affects": "Nothing in icesASD at present."
+    },
+    {
+      "topic": "Uploading catch scenarios",
+      "observation": "`upload_catch_scenario()` in icesASD posts to `https://data.ices.dk/vms/webapi/ScreenVMSFile`, the VMS screening service, not an ASD endpoint. That address no longer exists (404).",
+      "affects": "`upload_catch_scenario()` does not work."
+    },
+    {
+      "topic": "Content types",
+      "observation": "`DownloadCatchScenariosCSV` and `DownloadCatchScenariosXML` are sent as `text/plain`, not `text/csv` and `application/xml`. The XML refers to a stylesheet, `CatchOptionsTable.xsl`.",
+      "affects": "Clients have to know the format; icesASD does not use these endpoints."
+    },
+    {
+      "topic": "Unknown keys",
+      "observation": "An unknown advice key or stock code returns HTTP 200 with `[]`, not 404.",
+      "affects": "`getCatchScenariosTable()` and `getAdviceViewRecord()` return empty results rather than an error for a wrong key or stock code."
+    },
+    {
+      "topic": "Field names",
+      "observation": "Field names are camelCase, some with abbreviated prefixes (`cS_Label`, `aR_ID`, `aK_ID`). Parameter names are not case sensitive: the documentation has `StockCode` and `assessmentkey`, icesASD sends `stockcode` and `assessmentKey`.",
+      "affects": "Code that uses field names; the change check reports any change of case."
+    },
+    {
+      "topic": "Downloads",
+      "observation": "`api/Download` (POST, a JSON list of advice keys) returns a zip file with names that contain the date and time, e.g. `AdviceDownload_21_10_2026_00_46.zip`, holding the catch scenarios as CSV and a disclaimer PDF.",
+      "affects": "Nothing at present."
+    }
+  ],
+  "endpoints": [
+    { "name": "getAdviceViewRecord, by year", "path": "getAdviceViewRecord?year=2024" },
+    { "name": "getAdviceViewRecord, by stock", "path": "getAdviceViewRecord?StockCode=ple.27.420&year=2024" },
+    { "name": "getAdviceViewRecord, by assessment", "path": "getAdviceViewRecord?assessmentkey=18688" },
+    { "name": "getCatchScenariosTable", "path": "getCatchScenariosTable/3577" },
+    { "name": "getCatchScenariosNotes", "path": "getCatchScenariosNotes/3577" },
+    { "name": "DownloadCatchScenariosCSV", "path": "DownloadCatchScenariosCSV/3577" },
+    { "name": "DownloadCatchScenariosXML", "path": "DownloadCatchScenariosXML/3577" },
+    {
+      "name": "api/Download",
+      "path": "api/Download",
+      "method": "POST",
+      "body": "[\"3577\"]",
+      "content_type": "application/json"
+    }
+  ]
+}

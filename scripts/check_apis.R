@@ -65,6 +65,13 @@ check_endpoint <- function(api, ep) {
   out <- list(name = ep$name, url = url, checked = now())
 
   handle <- curl::new_handle(timeout = 300, useragent = "ices-tools-prod.github.io status check")
+  # endpoints that are read with a POST request (e.g. a download) give the
+  # method and body in the config
+  out$method <- ep$method %||% "GET"
+  if (out$method == "POST") {
+    curl::handle_setopt(handle, post = TRUE, postfields = ep$body %||% "")
+    curl::handle_setheaders(handle, "Content-Type" = ep$content_type %||% "application/json")
+  }
   resp <- tryCatch(curl::curl_fetch_memory(url, handle = handle), error = function(e) e)
   if (inherits(resp, "error")) {
     out$error <- conditionMessage(resp)
@@ -120,11 +127,11 @@ results <- lapply(seq_along(configs), function(i) {
   # that their R functions are found too
   for (e in endpoints) {
     segs <- relative_segments(e$url, base_path)
-    matched <- vapply(ops, function(o) match_operation(segs, relative_segments(o$full_path, base_path)), 0)
+    matched <- vapply(ops, function(o) if (o$method == e$method) match_operation(segs, relative_segments(o$full_path, base_path)) else 0, 0)
     if (!any(matched > 0)) {
       path <- sub("^https?://[^/]+", "", sub("[?#].*$", "", e$url))
-      ops[[paste("GET", path)]] <- list(method = "GET", path = path, full_path = path,
-                                        parameters = list(), undocumented = TRUE)
+      ops[[paste(e$method, path)]] <- list(method = e$method, path = path, full_path = path,
+                                           parameters = list(), undocumented = TRUE)
     }
   }
 
@@ -148,18 +155,21 @@ results <- lapply(seq_along(configs), function(i) {
     ops[[op]]$endpoint_functions <- I(sort(fn_names[is_endpoint]))
     is_combined <- vapply(functions, function(f) f$kind == "combined", logical(1))
     ops[[op]]$combined_functions <- I(sort(fn_names[uses_op & is_combined]))
+    # an operation checked here with POST only reads data
+    ops[[op]]$reads <- any(vapply(endpoints, function(e) e$method == ops[[op]]$method &&
+      match_operation(relative_segments(e$url, base_path), relative_segments(ops[[op]]$full_path, base_path)) > 0, logical(1)))
     ops[[op]]$writes <- writes_data(ops[[op]])
     ops[[op]]$suggested <- if (!any(is_endpoint) && !ops[[op]]$writes) suggest_name(ops[[op]], base_path, existing = unlist(lapply(package_code[pkgs], function(x) names(x$objects))))
     # the endpoints checked that call this operation
     op_segs <- relative_segments(ops[[op]]$full_path, base_path)
     ops[[op]]$checked <- I(as.character(unique(unlist(lapply(endpoints, function(e) {
-      if (ops[[op]]$method == "GET" && match_operation(relative_segments(e$url, base_path), op_segs) > 0) e$name
+      if (ops[[op]]$method == e$method && match_operation(relative_segments(e$url, base_path), op_segs) > 0) e$name
     })))))
   }
   # each endpoint, matched to the operation it matches most closely
   endpoints <- lapply(endpoints, function(e) {
     segs <- relative_segments(e$url, base_path)
-    score <- vapply(ops, function(o) if (o$method == "GET") match_operation(segs, relative_segments(o$full_path, base_path)) else 0, 0)
+    score <- vapply(ops, function(o) if (o$method == e$method) match_operation(segs, relative_segments(o$full_path, base_path)) else 0, 0)
     if (any(score > 0)) {
       op <- ops[[which.max(score)]]
       e$operation <- paste(op$method, op$path)

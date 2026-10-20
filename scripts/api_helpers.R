@@ -99,6 +99,11 @@ describe_response <- function(content, content_type) {
   if (!length(content)) {
     return(list())
   }
+  # some services send XML or CSV as plain text: look at the content
+  if (grepl("^text/plain", content_type)) {
+    start <- trimws(rawToChar(utils::head(content, 200)))
+    content_type <- if (startsWith(start, "<")) "text/xml" else "text/csv"
+  }
   if (grepl("json", content_type)) {
     x <- jsonlite::parse_json(rawToChar(content))
     return(list(
@@ -125,10 +130,13 @@ describe_response <- function(content, content_type) {
       files <- "response.csv"
     }
     csvs <- files[grepl("\\.(csv|txt)$", files, ignore.case = TRUE)]
-    out <- lapply(csvs, function(f) describe_csv(file.path(dir, f), f))
+    # file names in archives often contain dates or keys: digits are replaced
+    # by #, so that the names are the same from one day to the next
+    label <- function(f) gsub("[0-9]+", "#", f)
+    out <- lapply(csvs, function(f) describe_csv(file.path(dir, f), label(f)))
     fields <- c(list("(root)" = sub(".*/", "", content_type)), do.call(c, lapply(out, `[[`, "fields")))
     if (grepl("zip", content_type)) {
-      fields <- c(fields, setNames(lapply(files, function(f) "file"), files))
+      fields <- c(fields, setNames(lapply(files, function(f) "file"), label(files)))
     }
     return(list(records = sum(vapply(out, `[[`, 0, "records")), fields = fields[order(names(fields))]))
   }
@@ -353,7 +361,7 @@ read_package_code <- function(repo) {
   for (f in list.files(file.path(root, "R"), pattern = "\\.[Rr]$", full.names = TRUE)) {
     exprs <- tryCatch(parse(f, keep.source = FALSE), error = function(e) expression())
     for (e in exprs) {
-      if (is.call(e) && as.character(e[[1]]) %in% c("<-", "=", "<<-") && is.name(e[[2]])) {
+      if (is.call(e) && is.name(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=", "<<-") && is.name(e[[2]])) {
         objects[[as.character(e[[2]])]] <- list(
           strings = code_strings(e[[3]]),
           names = all.names(e[[3]])
@@ -476,7 +484,7 @@ suggest_name <- function(op, base_path, existing = character(0)) {
 
 # does an operation write or change data, rather than read it
 writes_data <- function(op) {
-  op$method != "GET" ||
-    grepl("(^|/)(upload|save|screen|publish|send|delete|submit)", op$path, ignore.case = TRUE) ||
+  (op$method != "GET" && !isTRUE(op$reads)) ||
+    grepl("(^|/)(upload|save|screen|publish|send|delete|submit|create|push)", op$path, ignore.case = TRUE) ||
     grepl("(^|/)set[A-Z_]", op$path)
 }
