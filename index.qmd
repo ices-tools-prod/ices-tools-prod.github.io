@@ -6,6 +6,8 @@ title: "ICES R packages"
 source("R/status.R")
 
 status <- read_status()
+apis <- read_apis()
+api_endpoints <- do.call(rbind, lapply(apis$apis, endpoint_table))
 tab <- status_table(status)
 n <- nrow(tab)
 
@@ -43,14 +45,17 @@ See [Packages](packages.qmd) for the details of each package.
 ```{r}
 simple_table(
   data.frame(
-    c("CRAN", "CRAN checks", "r-universe", "GitHub"),
+    c("CRAN", "CRAN checks", "r-universe", "GitHub", '<a href="apis.html">Web services</a>'),
     c(
       sprintf("%d on CRAN, %d archived, %d not on CRAN", n_cran[["cran"]], n_cran[["archived"]], n_cran[["none"]]),
       sprintf("%d OK, %d with notes, %d with warnings, %d with errors",
               n_checks[["OK"]], n_checks[["NOTE"]], n_checks[["WARNING"]], n_checks[["ERROR"]] + n_checks[["FAILURE"]]),
       sprintf("%d built, %d with failing builds or checks, %d not listed", n_universe, universe_failing, n - n_universe),
       sprintf("%d open issues, %d open pull requests, %d with unreleased changes",
-              sum(tab$open_issues, na.rm = TRUE), sum(tab$open_prs, na.rm = TRUE), nrow(unreleased))
+              sum(tab$open_issues, na.rm = TRUE), sum(tab$open_prs, na.rm = TRUE), nrow(unreleased)),
+      sprintf("%d APIs, %d endpoints: %d unchanged, %d changed, %d with errors",
+              length(apis$apis), nrow(api_endpoints), sum(api_endpoints$status == "ok"),
+              sum(api_endpoints$status == "changed"), sum(api_endpoints$status == "error"))
     )
   ),
   col.names = NULL
@@ -62,11 +67,24 @@ simple_table(
 ```{r}
 #| results: asis
 issues <- status_issues(status, levels = c("error", "warning"))
+# web service changes and errors
+for (a in apis$apis) {
+  for (e in a$endpoints) {
+    if (e$status %in% c("changed", "error")) {
+      issues <- rbind(issues, data.frame(
+        package = a$name, github_url = paste0("api/", a$id, ".html"),
+        level = if (e$status == "error") "error" else "warning",
+        text = paste0(e$name, ": ", if (e$status == "error") e$error else paste(length(e$changes), "changes since the baseline"))
+      ))
+    }
+  }
+}
 if (nrow(issues)) {
   simple_table(
     data.frame(
-      Package = pkg_link(issues$package, issues$github_url),
-      Problem = paste(ifelse(issues$level == "error", "<strong>Action needed:</strong>", ""), issues$text)
+      `Package or service` = pkg_link(issues$package, ifelse(grepl("^api/", issues$github_url), issues$github_url, paste0("package/", issues$package, ".html"))),
+      Problem = paste(ifelse(issues$level == "error", "<strong>Action needed:</strong>", ""), issues$text),
+      check.names = FALSE
     )
   )
 } else {
@@ -83,7 +101,7 @@ Packages with a newer version on GitHub than on CRAN.
 if (nrow(unreleased)) {
   simple_table(
     data.frame(
-      Package = pkg_link(unreleased$package, unreleased$github_url),
+      Package = pkg_link(unreleased$package, paste0("package/", unreleased$package, ".html")),
       CRAN = unreleased$cran_version,
       GitHub = unreleased$github_version,
       `Last commit` = format(unreleased$last_commit, "%d %b %Y"),
@@ -102,7 +120,7 @@ if (nrow(unreleased)) {
 if (nrow(with_prs)) {
   simple_table(
     data.frame(
-      Package = pkg_link(with_prs$package, with_prs$github_url),
+      Package = pkg_link(with_prs$package, paste0("package/", with_prs$package, ".html")),
       `Pull requests` = pkg_link(with_prs$open_prs, paste0(with_prs$github_url, "/pulls")),
       check.names = FALSE
     )

@@ -1,0 +1,57 @@
+---
+title: "Web services"
+---
+
+```{r}
+source("R/status.R")
+status <- read_status()
+apis <- read_apis()
+```
+
+The ICES web services (APIs) called by the packages. Every day each endpoint
+is called with example values, and the structure of the response (the names
+of the fields, their types, and the format of text values such as dates) is
+compared with a recorded baseline. This finds changes that can break the
+packages, such as a field renamed from `AssessmentKey` to `assessmentKey`, a
+field removed, or a number returned as text. Checked `r updated(apis)`.
+
+```{r}
+#| results: asis
+md_table(
+  do.call(rbind, lapply(apis$apis, function(a) {
+    eps <- endpoint_table(a)
+    users <- api_packages(a, status)
+    n <- table(factor(eps$status, levels = c("ok", "changed", "no baseline", "error")))
+    data.frame(
+      API = sprintf("[%s](api/%s.html)", a$name, a$id),
+      Status = as.character(badge(
+        c(ok = "No changes", warning = "Changes found", error = "Errors")[[a$health]],
+        c(ok = "success", warning = "warning", error = "danger")[[a$health]]
+      )),
+      Endpoints = sprintf("%d: %d unchanged, %d changed, %d with errors", nrow(eps), n[["ok"]], n[["changed"]], n[["error"]]),
+      `Median time (s)` = median(eps$time_s, na.rm = TRUE),
+      `Used by` = paste(package_link(c(users$direct, users$via), status), collapse = ", "),
+      check.names = FALSE
+    )
+  })),
+  align = "llllr"
+)
+```
+
+## Adding an API or endpoint
+
+The web services and endpoints are listed in
+[apis.json](https://github.com/ices-tools-prod/ices-tools-prod.github.io/blob/main/apis.json).
+For each endpoint, give a path with example query values that return a stable
+result, such as a published assessment.
+
+## Accepting a change
+
+When a change is expected, for example after the package has been updated to
+use the new field names, record a new baseline:
+
+```sh
+Rscript scripts/check_apis.R --update-baseline
+```
+
+and commit the files in `api-baselines/`.

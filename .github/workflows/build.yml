@@ -32,7 +32,7 @@ jobs:
           use-public-rspm: true
 
       - name: Install R packages
-        run: Rscript -e 'install.packages(c("jsonlite", "knitr", "rmarkdown", "htmltools", "reactable"))'
+        run: Rscript -e 'install.packages(c("jsonlite", "curl", "knitr", "rmarkdown", "htmltools", "reactable"))'
 
       - uses: quarto-dev/quarto-actions/setup@v2
 

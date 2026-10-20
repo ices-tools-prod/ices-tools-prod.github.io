@@ -1,0 +1,85 @@
+<!--
+Template for the API pages. scripts/make_pages.R creates one page per API
+in api/, which sets `api_id` and includes this file.
+-->
+
+```{r}
+source("R/status.R")
+status <- read_status()
+apis <- read_apis()
+api <- apis$apis[[match(api_id, vapply(apis$apis, `[[`, "", "id"))]]
+eps <- endpoint_table(api)
+users <- api_packages(api, status)
+```
+
+```{r}
+#| results: asis
+md(api$description %||% "")
+md("Base url: `", api$base_url, "`",
+   if (!is.null(api$website)) paste0(" · [Website](", api$website, ")"))
+md("Checked ", updated(apis), ". ",
+   if (!is.null(api$baseline_recorded)) paste0("Responses are compared with the baseline recorded on ", substr(api$baseline_recorded, 1, 10), ".")
+   else "There is no baseline yet, so changes can not be detected.")
+```
+
+## Used by
+
+```{r}
+#| results: asis
+md("**Directly:** ", if (length(users$direct)) paste(package_link(users$direct, status, from = "api"), collapse = ", ") else "none")
+md("**Through a dependency:** ", if (length(users$via)) paste(package_link(users$via, status, from = "api"), collapse = ", ") else "none")
+```
+
+## Endpoints
+
+```{r}
+#| results: asis
+md_table(
+  data.frame(
+    Endpoint = sprintf("[%s](#%s)", eps$name, gsub("[^a-z0-9]+", "-", tolower(eps$name))),
+    Status = vapply(eps$status, function(s) as.character(badge(api_status_label[[s]], api_status_colour[[s]])), ""),
+    HTTP = eps$http_status,
+    `Time (s)` = eps$time_s,
+    `Size (kB)` = eps$size_kb,
+    Records = eps$records,
+    Fields = eps$fields,
+    check.names = FALSE
+  ),
+  align = "llrrrrr"
+)
+```
+
+## Changes since the baseline
+
+```{r}
+#| results: asis
+changes <- unlist(lapply(api$endpoints, function(e) {
+  vapply(e$changes, function(ch) paste0("**", e$name, "**: ", ch$text), "")
+}))
+errors <- unlist(lapply(api$endpoints, function(e) if (!is.null(e$error)) paste0("**", e$name, "**: ", e$error)))
+md_list(c(errors, changes), empty = "No changes: every endpoint returns the same structure as the baseline.")
+```
+
+```{r}
+#| results: asis
+for (e in api$endpoints) {
+  md("## ", e$name, ' {#', gsub("[^a-z0-9]+", "-", tolower(e$name)), '}')
+  md("`", e$url, "`")
+  md("Called by: ", paste0("`", unlist(e$functions), "()`", collapse = ", "))
+  info <- c(
+    if (!is.null(e$http_status)) paste("HTTP", e$http_status),
+    if (!is.null(e$content_type) && nzchar(e$content_type)) e$content_type,
+    if (!is.null(e$time_s)) paste(e$time_s, "s"),
+    if (!is.null(e$records)) paste(e$records, "records")
+  )
+  if (length(info)) md(paste(info, collapse = " · "))
+  if (length(e$fields)) {
+    md('::: {.callout-note collapse="true" title="Response structure: ', length(e$fields), ' fields"}')
+    md_table(data.frame(
+      Field = paste0("`", names(e$fields), "`"),
+      Type = vapply(e$fields, function(t) paste(unlist(t), collapse = " | "), "")
+    ), row.names = FALSE)
+    md(":::")
+  }
+}
+```

@@ -140,6 +140,32 @@ cran_overrides <-
     "CRAN PACKAGES.in"
   )
 
+msg("reading package repositories, for dependencies")
+# CRAN and the ICES r-universes, to resolve dependencies recursively
+dep_db <-
+  try_read(
+    available.packages(
+      repos = c(CRAN = cran, setNames(paste0("https://", universes, ".r-universe.dev"), universes)),
+      type = "source"
+    ),
+    "package repositories"
+  )
+base_packages <- rownames(installed.packages(priority = "base"))
+
+# all hard dependencies (Depends, Imports, LinkingTo), found recursively,
+# excluding base R packages
+all_dependencies <- function(direct) {
+  found <- if (!is.null(dep_db)) intersect(direct, rownames(dep_db)) else character(0)
+  recursive <-
+    tools::package_dependencies(
+      found,
+      db = dep_db,
+      which = c("Depends", "Imports", "LinkingTo"),
+      recursive = TRUE
+    )
+  sort(setdiff(unique(c(direct, unlist(recursive))), base_packages))
+}
+
 msg("reading r-universe")
 runiverse <- list()
 for (u in universes) {
@@ -264,6 +290,8 @@ status <- lapply(pkgs, function(cfg) {
     maintainer = if (!is.null(d)) maintainer(d) else NA_character_,
     notes = cfg$notes,
     dependencies = I(if (!is.null(d)) dependencies(d) else character(0)),
+    direct_dependencies = I(if (!is.null(d)) setdiff(dependencies(d), base_packages) else character(0)),
+    all_dependencies = I(if (!is.null(d)) all_dependencies(dependencies(d)) else character(0)),
     github = github,
     cran = cran_info,
     runiverse = universe

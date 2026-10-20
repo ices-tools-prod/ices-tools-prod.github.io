@@ -22,6 +22,10 @@
       "repo": "ices-tools-prod/icesAdvice"
     },
     {
+      "package": "icesAdviceSheet",
+      "repo": "ices-tools-dev/icesAdviceSheet"
+    },
+    {
       "package": "icesASD",
       "repo": "ices-tools-prod/icesASD"
     },

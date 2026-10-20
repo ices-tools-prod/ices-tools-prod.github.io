@@ -1,0 +1,129 @@
+<!--
+Template for the package pages. scripts/make_pages.R creates one page per
+package in package/, which sets `pkg` and includes this file.
+-->
+
+```{r}
+source("R/status.R")
+status <- read_status()
+apis <- read_apis()
+p <- find_package(status, pkg)
+g <- p$github
+cr <- p$cran
+u <- p$runiverse
+```
+
+```{r}
+#| results: asis
+md(p$title %||% g$description %||% "")
+if (!is.null(p$maintainer)) md("Maintainer: ", sub(" <.*", "", p$maintainer))
+links <- c(
+  sprintf("[GitHub](%s)", g$url),
+  if (!is.null(cr$url)) sprintf("[CRAN](%s)", cr$url),
+  if (!is.null(u)) sprintf("[r-universe](%s)", u$url),
+  if (!is.null(g$homepage)) sprintf("[Website](%s)", g$homepage)
+)
+md(paste(links, collapse = " · "))
+if (!is.null(p$notes)) md("::: {.callout-note}\n", p$notes, "\n:::")
+```
+
+## Status
+
+```{r}
+#| results: asis
+md(as.character(health_badge(p$health)))
+md_list(vapply(p$issues, `[[`, "", "text"), empty = "No problems found.")
+```
+
+## Versions
+
+```{r}
+#| results: asis
+md_table(
+  data.frame(
+    Source = c("GitHub", "CRAN", "r-universe"),
+    Version = c(
+      g$version %||% "",
+      cr$version %||% "",
+      u$version %||% ""
+    ),
+    Details = c(
+      sprintf("Default branch `%s`, last commit %s", g$default_branch %||% "?", substr(g$last_commit %||% "", 1, 10)),
+      switch(cr$status,
+        cran = paste0("Published ", cr$published),
+        archived = cr$comment %||% "Archived",
+        "Not on CRAN"
+      ),
+      if (is.null(u)) "Not on the ICES r-universe" else paste0("`", u$universe, "`, build ", u$build_status, ", checks ", u$checks$worst %||% "?")
+    )
+  )
+)
+```
+
+## CRAN
+
+```{r}
+#| results: asis
+if (cr$status == "cran") {
+  md("Version ", cr$version, ", published ", cr$published, ".",
+     if (!is.null(cr$first_release)) paste0(" First released ", cr$first_release, "."))
+  if (!is.null(cr$deadline)) md("**Deadline: ", cr$deadline, "**. The package will be archived unless the problems are fixed.")
+  if (!is.null(cr$checks)) {
+    counts <- unlist(cr$checks$counts)
+    counts <- counts[counts > 0]
+    md("[Check results](", cr$checks$url, "): ", paste(counts, names(counts), collapse = ", "), ".")
+  }
+  if (length(cr$additional_issues)) md("Additional issues: ", paste(unlist(cr$additional_issues), collapse = ", "), ".")
+} else if (cr$status == "archived") {
+  md("Archived on CRAN. ", cr$comment %||% "")
+  if (!is.null(cr$first_release)) md("First released ", cr$first_release, ", ", cr$archived_versions, if (cr$archived_versions == 1) " version" else " versions", " in the archive.")
+} else {
+  md("Not on CRAN.")
+}
+```
+
+## Dependencies
+
+```{r}
+#| results: asis
+direct <- unlist(p$direct_dependencies)
+all <- unlist(p$all_dependencies)
+md(length(direct), " direct and ", length(all), " in total, excluding base R packages.")
+if (length(direct)) md("Direct: ", paste(package_link(direct, status, from = "package"), collapse = ", "), ".")
+if (length(all) > length(direct)) {
+  md('::: {.callout-note collapse="true" title="All ', length(all), ' dependencies"}\n',
+     paste(package_link(all, status, from = "package"), collapse = ", "), "\n:::")
+}
+md("**Uses ICES packages:** ",
+   if (length(p$ices_dependencies)) paste(package_link(unlist(p$ices_dependencies), status, from = "package"), collapse = ", ") else "none")
+md("**Used by ICES packages:** ",
+   if (length(p$ices_reverse_dependencies)) paste(package_link(unlist(p$ices_reverse_dependencies), status, from = "package"), collapse = ", ") else "none")
+```
+
+## Web services
+
+```{r}
+#| results: asis
+used <- package_apis(apis, p)
+api_line <- function(a) sprintf("[%s](../api/%s.html): %s", a$name, a$id, api_status_label[[if (a$health == "ok") "ok" else if (a$health == "error") "error" else "changed"]])
+if (length(used$direct)) {
+  md("Calls directly:")
+  md_list(vapply(used$direct, api_line, ""))
+}
+if (length(used$via)) {
+  md("Through its dependencies:")
+  md_list(vapply(used$via, function(a) paste0(api_line(a), " (via ", paste(intersect(unlist(a$packages), unlist(p$all_dependencies)), collapse = ", "), ")"), ""))
+}
+if (!length(used$direct) && !length(used$via)) {
+  md("None of the [checked web services](../apis.html).")
+}
+```
+
+## GitHub
+
+```{r}
+#| results: asis
+md(sprintf("[%s open issues](%s/issues) and [%s open pull requests](%s/pulls).",
+           g$open_issues %||% "?", g$url, g$open_prs %||% "?", g$url))
+if (!is.null(g$last_commit)) md("Last commit on `", g$default_branch, "`, ", substr(g$last_commit, 1, 10), ": ", g$last_commit_message %||% "")
+```
