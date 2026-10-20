@@ -53,8 +53,8 @@ simple_table(
       sprintf("%d built, %d with failing builds or checks, %d not listed", n_universe, universe_failing, n - n_universe),
       sprintf("%d open issues, %d open pull requests, %d with unreleased changes",
               sum(tab$open_issues, na.rm = TRUE), sum(tab$open_prs, na.rm = TRUE), nrow(unreleased)),
-      sprintf("%d APIs, %d endpoints: %d unchanged, %d changed, %d with errors",
-              length(apis$apis), nrow(api_endpoints), sum(api_endpoints$status == "ok"),
+      sprintf("%d %s, %d endpoints: %d unchanged, %d changed, %d with errors",
+              length(apis$apis), if (length(apis$apis) == 1) "API" else "APIs", nrow(api_endpoints), sum(api_endpoints$status == "ok"),
               sum(api_endpoints$status == "changed"), sum(api_endpoints$status == "error"))
     )
   ),
