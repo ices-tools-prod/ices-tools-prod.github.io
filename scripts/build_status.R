@@ -299,7 +299,9 @@ for (pkg in listed) {
   if (identical(s$cran$checks$worst, "WARNING")) add("warning", "CRAN checks have warnings")
   if (length(s$cran$additional_issues)) add("warning", paste("CRAN additional issues:", paste(s$cran$additional_issues, collapse = ", ")))
   if (!is.null(s$runiverse) && !identical(s$runiverse$build_status, "success")) add("warning", "r-universe build failed")
-  if (length(s$runiverse$checks$failing)) add("warning", paste("r-universe checks failing on:", paste(s$runiverse$checks$failing, collapse = ", ")))
+  failing <- s$runiverse$checks$failing
+  if (length(failing) > 3) add("warning", paste("r-universe checks failing on", length(failing), "platforms"))
+  else if (length(failing)) add("warning", paste("r-universe checks failing on:", paste(failing, collapse = ", ")))
   if (is.null(s$runiverse)) add("info", "Not on the ICES r-universe")
   if (s$github$archived) add("info", "GitHub repository is archived")
   if (s$unreleased) add("info", paste0("Unreleased changes: ", s$github$version, " on GitHub, ", s$cran$version, " on CRAN"))

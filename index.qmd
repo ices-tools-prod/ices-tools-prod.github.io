@@ -1,16 +1,9 @@
 ---
-title: "Overview"
-format:
-  dashboard:
-    theme:
-      light: cosmo
-      dark: darkly
+title: "ICES R packages"
 ---
 
 ```{r}
-#| include: false
 source("R/status.R")
-library(reactable)
 
 status <- read_status()
 tab <- status_table(status)
@@ -18,130 +11,103 @@ n <- nrow(tab)
 
 n_health <- table(factor(tab$health, levels = c("ok", "warning", "error")))
 n_cran <- table(factor(tab$cran_status, levels = c("cran", "archived", "none")))
-cran_failing <- sum(tab$cran_checks %in% c("ERROR", "FAILURE"))
-cran_warning <- sum(tab$cran_checks %in% "WARNING")
+n_checks <- table(factor(tab$cran_checks, levels = c("OK", "NOTE", "WARNING", "ERROR", "FAILURE")))
+n_universe <- sum(!is.na(tab$universe_build))
 universe_failing <- sum(
   (!is.na(tab$universe_build) & tab$universe_build != "success") |
     tab$universe_checks %in% c("WARNING", "ERROR", "FAILURE")
 )
 unreleased <- tab[tab$unreleased, ]
 with_prs <- tab[!is.na(tab$open_prs) & tab$open_prs > 0, ]
-```
-
-## Row {height="20%"}
-
-```{r}
-#| content: valuebox
-#| title: !expr paste(n_health[["ok"]], "OK,", n_health[["warning"]], "need attention,", n_health[["error"]], "need action")
-list(icon = "box-seam", color = if (n_health[["error"]]) "danger" else if (n_health[["warning"]]) "warning" else "success", value = paste(n, "packages"))
-```
-
-```{r}
-#| content: valuebox
-#| title: !expr paste(n_cran[["archived"]], "archived,", n_cran[["none"]], "not on CRAN")
-list(icon = "check2-circle", color = "primary", value = paste(n_cran[["cran"]], "on CRAN"))
-```
-
-```{r}
-#| content: valuebox
-#| title: !expr paste("CRAN checks:", cran_warning, "with warnings")
-list(
-  icon = "clipboard-check",
-  color = if (cran_failing) "danger" else if (cran_warning) "warning" else "success",
-  value = if (cran_failing) paste(cran_failing, "failing") else "All passing"
-)
-```
-
-```{r}
-#| content: valuebox
-#| title: !expr paste("r-universe:", sum(!is.na(tab$universe_build)), "of", n, "packages built")
-list(
-  icon = "boxes",
-  color = if (universe_failing) "warning" else "success",
-  value = if (universe_failing) paste(universe_failing, "failing") else "All passing"
-)
-```
-
-```{r}
-#| content: valuebox
-#| title: "Unreleased changes on GitHub"
-list(icon = "git", color = "info", value = nrow(unreleased))
-```
-
-```{r}
-#| content: valuebox
-#| title: !expr paste(sum(tab$open_prs, na.rm = TRUE), "pull requests")
-list(icon = "chat-left-text", color = "secondary", value = paste(sum(tab$open_issues, na.rm = TRUE), "open issues"))
-```
-
-## Row
-
-### Column {width="60%"}
-
-```{r}
-#| title: Needs attention
-issues <- status_issues(status, levels = c("error", "warning"))
-
-reactable(
-  issues[c("package", "level", "text")],
-  pagination = FALSE,
-  compact = TRUE,
-  sortable = FALSE,
-  columns = list(
-    package = colDef(name = "Package", maxWidth = 170, cell = function(value, index) {
-      a(href = issues$github_url[index], value)
-    }),
-    level = colDef(name = "", maxWidth = 150, cell = function(value) {
-      badge(c(error = "Action needed", warning = "Needs attention")[[value]], status_colour[[value]])
-    }),
-    text = colDef(name = "Problem")
-  ),
-  language = reactableLang(noData = "Nothing needs attention.")
-)
-```
-
-### Column {width="40%"}
-
-```{r}
-#| title: Unreleased changes
-reactable(
-  unreleased[c("package", "cran_version", "github_version", "last_commit")],
-  pagination = FALSE,
-  compact = TRUE,
-  columns = list(
-    package = colDef(name = "Package", cell = function(value, index) {
-      a(href = unreleased$github_url[index], value)
-    }),
-    cran_version = colDef(name = "CRAN"),
-    github_version = colDef(name = "GitHub"),
-    last_commit = colDef(name = "Last commit", format = colFormat(date = TRUE))
-  ),
-  language = reactableLang(noData = "All CRAN packages are up to date with GitHub.")
-)
-```
-
-```{r}
-#| title: Open pull requests
 with_prs <- with_prs[order(-with_prs$open_prs), ]
-reactable(
-  with_prs[c("package", "open_prs")],
-  pagination = FALSE,
-  compact = TRUE,
-  columns = list(
-    package = colDef(name = "Package"),
-    open_prs = colDef(name = "Open pull requests", cell = function(value, index) {
-      a(href = paste0(with_prs$github_url[index], "/pulls"), value)
-    })
-  ),
-  language = reactableLang(noData = "No open pull requests.")
-)
+
+# a simple table, with html in the cells
+simple_table <- function(x, ...) {
+  knitr::kable(x, format = "html", escape = FALSE, table.attr = 'class="table table-sm"', ...)
+}
+pkg_link <- function(pkg, url) sprintf('<a href="%s">%s</a>', url, pkg)
 ```
 
-::: {.card title="About"}
-Status of the R packages maintained by ICES, from the
+The R packages maintained by ICES, in the
 [ices-tools-prod](https://github.com/ices-tools-prod) and
 [ices-tools-dev](https://github.com/ices-tools-dev) GitHub organisations.
-See [Packages](packages.qmd) for details of every package.
-
 Updated `r updated(status)`.
-:::
+
+**`r n` packages: `r n_health[["ok"]]` OK,
+`r n_health[["warning"]]` need attention,
+`r n_health[["error"]]` need action.**
+See [Packages](packages.qmd) for the details of each package.
+
+## At a glance
+
+```{r}
+simple_table(
+  data.frame(
+    c("CRAN", "CRAN checks", "r-universe", "GitHub"),
+    c(
+      sprintf("%d on CRAN, %d archived, %d not on CRAN", n_cran[["cran"]], n_cran[["archived"]], n_cran[["none"]]),
+      sprintf("%d OK, %d with notes, %d with warnings, %d with errors",
+              n_checks[["OK"]], n_checks[["NOTE"]], n_checks[["WARNING"]], n_checks[["ERROR"]] + n_checks[["FAILURE"]]),
+      sprintf("%d built, %d with failing builds or checks, %d not listed", n_universe, universe_failing, n - n_universe),
+      sprintf("%d open issues, %d open pull requests, %d with unreleased changes",
+              sum(tab$open_issues, na.rm = TRUE), sum(tab$open_prs, na.rm = TRUE), nrow(unreleased))
+    )
+  ),
+  col.names = NULL
+)
+```
+
+## Needs attention
+
+```{r}
+#| results: asis
+issues <- status_issues(status, levels = c("error", "warning"))
+if (nrow(issues)) {
+  simple_table(
+    data.frame(
+      Package = pkg_link(issues$package, issues$github_url),
+      Problem = paste(ifelse(issues$level == "error", "<strong>Action needed:</strong>", ""), issues$text)
+    )
+  )
+} else {
+  cat("Nothing needs attention.")
+}
+```
+
+## Unreleased changes
+
+Packages with a newer version on GitHub than on CRAN.
+
+```{r}
+#| results: asis
+if (nrow(unreleased)) {
+  simple_table(
+    data.frame(
+      Package = pkg_link(unreleased$package, unreleased$github_url),
+      CRAN = unreleased$cran_version,
+      GitHub = unreleased$github_version,
+      `Last commit` = format(unreleased$last_commit, "%d %b %Y"),
+      check.names = FALSE
+    )
+  )
+} else {
+  cat("All CRAN packages are up to date with GitHub.")
+}
+```
+
+## Open pull requests
+
+```{r}
+#| results: asis
+if (nrow(with_prs)) {
+  simple_table(
+    data.frame(
+      Package = pkg_link(with_prs$package, with_prs$github_url),
+      `Pull requests` = pkg_link(with_prs$open_prs, paste0(with_prs$github_url, "/pulls")),
+      check.names = FALSE
+    )
+  )
+} else {
+  cat("No open pull requests.")
+}
+```
