@@ -15,7 +15,8 @@ compared with a recorded baseline. This finds changes that can break the
 packages, such as a field renamed from `AssessmentKey` to `assessmentKey`, a
 field removed, or a number returned as text. Where the API has
 machine-readable documentation, changes to the documented operations and
-their parameters are also found. Checked `r updated(apis)`.
+their parameters are also found, and the R functions for each operation are
+listed, with suggestions for operations that have none. Checked `r updated(apis)`.
 
 ```{r}
 #| results: asis
@@ -32,12 +33,16 @@ md_table(
       )),
       Endpoints = sprintf("%d: %d unchanged, %d changed, %d with errors", nrow(eps), n[["ok"]], n[["changed"]], n[["error"]]),
       `Median time (s)` = median(eps$time_s, na.rm = TRUE),
-      Documentation = if (!is.null(a$docs)) sprintf("[%s](%s)", if (is.null(a$spec)) "Yes" else paste(length(a$spec$operations), "operations"), a$docs) else "None",
+      `R functions` = {
+        read_ops <- Filter(function(o) !isTRUE(o$writes), a$operations)
+        sprintf("[%d of %d operations](api/%s.html#r-functions)", sum(vapply(read_ops, function(o) length(o$endpoint_functions) > 0, logical(1))), length(read_ops), a$id)
+      },
+      Documentation = if (!is.null(a$docs)) sprintf("[%s](%s)", if (is.null(a$spec)) "Yes" else paste(sum(!vapply(a$operations, function(o) isTRUE(o$undocumented), logical(1))), "operations"), a$docs) else "None",
       `Used by` = paste(package_link(c(users$direct, users$via), status), collapse = ", "),
       check.names = FALSE
     )
   })),
-  align = "lllrll"
+  align = "lllrlll"
 )
 ```
 

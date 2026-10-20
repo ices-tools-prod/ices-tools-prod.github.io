@@ -146,7 +146,8 @@ results <- lapply(seq_along(configs), function(i) {
     # other functions that call the operation, directly or through other functions
     uses_op <- vapply(functions, function(f) op %in% c(f$operations, f$other_operations), logical(1))
     ops[[op]]$endpoint_functions <- I(sort(fn_names[is_endpoint]))
-    ops[[op]]$combined_functions <- I(sort(fn_names[uses_op & !is_endpoint]))
+    is_combined <- vapply(functions, function(f) f$kind == "combined", logical(1))
+    ops[[op]]$combined_functions <- I(sort(fn_names[uses_op & is_combined]))
     ops[[op]]$writes <- writes_data(ops[[op]])
     ops[[op]]$suggested <- if (!any(is_endpoint) && !ops[[op]]$writes) suggest_name(ops[[op]], base_path, existing = unlist(lapply(package_code[pkgs], function(x) names(x$objects))))
     # the endpoints checked that call this operation

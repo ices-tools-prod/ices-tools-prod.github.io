@@ -42,6 +42,11 @@ Changes are reported on the site: fields renamed (including changes of case,
 such as `AssessmentKey` to `assessmentKey`), added or removed, fields
 changing type, and changes in the HTTP status or content type.
 
+The R code of the packages that call each API is read from GitHub (parsed,
+never run) to find the R function for each operation, and the functions
+that combine several operations. Operations that read data but have no R
+function are listed with a suggested function name.
+
 When a change is expected, or for a new API, record a new baseline for it
 and commit it:
 
@@ -67,6 +72,7 @@ Without an id, the baselines of all APIs are updated.
 | `R/status.R` | R functions used by the pages |
 | `scripts/build_status.R` | collects the status of each package into `data/status.json` |
 | `scripts/check_apis.R` | checks the web services, into `data/apis.json` |
+| `scripts/api_helpers.R` | functions used by `check_apis.R` |
 | `scripts/make_pages.R` | creates a page per package (`package/`) and per web service (`api/`) from the templates |
 | `_quarto.yml` | site settings: navigation, theme, footer, and the scripts run before rendering |
 | `.github/workflows/build.yml` | renders and publishes the site |
@@ -93,7 +99,7 @@ for each package is:
 
 ## Building locally
 
-Needs Quarto, the R packages `jsonlite`, `curl`, `knitr`, `rmarkdown`,
+Needs Quarto, the R packages `jsonlite`, `curl`, `xml2`, `knitr`, `rmarkdown`,
 `htmltools` and `reactable`, and the GitHub CLI, logged in.
 
 ```sh

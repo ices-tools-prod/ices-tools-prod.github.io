@@ -86,7 +86,7 @@ if (is.null(sp)) {
 } else if (!is.null(sp$error)) {
   md("The [documentation](", sp$url, ") could not be read: ", sp$error)
 } else {
-  ops <- sp$operations
+  ops <- Filter(function(o) !isTRUE(o$undocumented), api$operations)
   n_checked <- sum(vapply(ops, function(o) length(o$checked) > 0, logical(1)))
   md("The [documentation](", api$docs %||% sp$url, ") (", sp$title, " ", sp$version, ") lists ",
      length(ops), " operations, of which ", n_checked, " are checked here. ",
@@ -100,6 +100,45 @@ if (is.null(sp)) {
 }
 ```
 
+## R functions
+
+```{r}
+#| results: asis
+ops <- api$operations
+fns <- api$functions
+fn <- function(x) if (length(x)) paste0("`", unlist(x), "()`", collapse = ", ") else ""
+read_ops <- Filter(function(o) !isTRUE(o$writes), ops)
+n_mapped <- sum(vapply(read_ops, function(o) length(o$endpoint_functions) > 0, logical(1)))
+md("The packages are designed with one R function for each endpoint, and further ",
+   "functions that combine endpoints into a dataset. Functions are found by reading the code of ",
+   paste(package_link(unlist(api$packages), status, from = "api"), collapse = ", "), ". ",
+   n_mapped, " of the ", length(read_ops), " operations that read data have an R function; ",
+   "a function name is suggested for the others.")
+md("### Operations and R functions")
+md_table(data.frame(
+  Operation = vapply(ops, function(o) paste0("`", o$method, " ", o$path, "`", if (isTRUE(o$undocumented)) " (not documented)" else ""), ""),
+  `R function` = vapply(ops, function(o) {
+    if (length(o$endpoint_functions)) fn(o$endpoint_functions)
+    else if (isTRUE(o$writes)) "*none: uploads or changes data*"
+    else paste0("**missing**: suggest `", o$suggested, "()`")
+  }, ""),
+  `Also used in` = vapply(ops, function(o) fn(o$combined_functions), ""),
+  check.names = FALSE
+))
+combined <- Filter(function(f) f$kind == "combined", fns)
+md("### Combined functions")
+if (length(combined)) {
+  md_table(data.frame(
+    Function = vapply(combined, function(f) fn(f$name), ""),
+    `Builds on` = vapply(combined, function(f) fn(f$uses), ""),
+    Operations = vapply(combined, function(f) paste0("`", sub("^[A-Z]+ ", "", unlist(c(f$operations, f$other_operations))), "`", collapse = ", "), ""),
+    check.names = FALSE
+  ))
+} else {
+  md("None.")
+}
+```
+
 ## Endpoint details
 
 ```{r}
@@ -107,7 +146,8 @@ if (is.null(sp)) {
 for (e in api$endpoints) {
   md("### ", e$name, ' {#', gsub("[^a-z0-9]+", "-", tolower(e$name)), '}')
   md("`", e$url, "`")
-  md("Called by: ", paste0("`", unlist(e$functions), "()`", collapse = ", "))
+  if (length(e$functions)) md("Called by: ", paste0("`", unlist(e$functions), "()`", collapse = ", "))
+  if (!is.null(e$operation)) md("Operation: `", e$operation, "`")
   info <- c(
     if (!is.null(e$http_status)) paste("HTTP", e$http_status),
     if (!is.null(e$content_type) && nzchar(e$content_type)) e$content_type,
