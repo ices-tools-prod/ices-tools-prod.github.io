@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICES R packages</title>
+  <meta name="description" content="Status of the R packages maintained by ICES: CRAN releases and checks, r-universe builds, and GitHub activity.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./">ICES R packages</a>
+      <nav>
+        <a href="./" aria-current="page">Overview</a>
+        <a href="packages.html">Packages</a>
+      </nav>
+      <span class="updated" id="updated"></span>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <h1>Package status overview</h1>
+    <p class="lede">
+      The R packages maintained by ICES, from the
+      <a href="https://github.com/ices-tools-prod">ices-tools-prod</a> and
+      <a href="https://github.com/ices-tools-dev">ices-tools-dev</a> GitHub organisations.
+      Status is collected daily from CRAN, the ICES
+      <a href="https://ices-tools-prod.r-universe.dev">r-universe</a> and GitHub.
+    </p>
+    <div id="content"><p class="sub">Loading&hellip;</p></div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      The list of packages is set in
+      <a href="https://github.com/ices-tools-prod/ices-tools-prod.github.io/blob/main/packages.json">packages.json</a>.
+      Source: <a href="https://github.com/ices-tools-prod/ices-tools-prod.github.io">ices-tools-prod/ices-tools-prod.github.io</a>.
+    </div>
+  </footer>
+
+  <script src="assets/common.js"></script>
+  <script>
+    function count(pkgs, fn) { return pkgs.filter(fn).length; }
+
+    function tile(label, value, detail, bar) {
+      return h("div", { class: "tile" },
+        h("div", { class: "label" }, label),
+        h("div", { class: "value" }, value),
+        bar || null,
+        h("div", { class: "detail" }, detail));
+    }
+
+    // a stacked bar from [{n, color, title}]
+    function stackedBar(parts, total) {
+      return h("div", { class: "bar", role: "img", "aria-label": parts.map(p => p.title + ": " + p.n).join(", ") },
+        parts.filter(p => p.n > 0).map(p =>
+          h("span", { style: "width:" + (100 * p.n / total) + "%;background:var(" + p.color + ")", title: p.title + ": " + p.n })));
+    }
+
+    function packageLink(p) {
+      return h("a", { href: "packages.html#" + encodeURIComponent(p.package) }, p.package);
+    }
+
+    function render(data) {
+      const pkgs = data.packages;
+      const n = pkgs.length;
+      const content = document.getElementById("content");
+
+      // CRAN
+      const onCran = pkgs.filter(p => p.cran.status === "cran");
+      const archived = count(pkgs, p => p.cran.status === "archived");
+      const notCran = n - onCran.length - archived;
+      const worst = lvl => count(onCran, p => p.cran.checks && p.cran.checks.worst === lvl);
+      const cranErr = worst("ERROR") + worst("FAILURE");
+
+      // r-universe
+      const inUniverse = pkgs.filter(p => p.runiverse);
+      const ruFailing = count(inUniverse, p => p.runiverse.build_status !== "success" || (p.runiverse.checks.failing || []).length);
+
+      // health
+      const health = lvl => count(pkgs, p => p.health === lvl);
+
+      const issues = pkgs.reduce((s, p) => s + (p.github.open_issues || 0), 0);
+      const prs = pkgs.reduce((s, p) => s + (p.github.open_prs || 0), 0);
+      const unreleased = pkgs.filter(p => p.unreleased);
+
+      const tiles = h("div", { class: "tiles" },
+        tile("Packages", n, [
+          badge(health("ok") + " OK", "ok"),
+          badge(health("warning") + " need attention", "warning"),
+          badge(health("error") + " need action", "error")
+        ], stackedBar([
+          { n: health("ok"), color: "--ok", title: "OK" },
+          { n: health("warning"), color: "--warn", title: "Needs attention" },
+          { n: health("error"), color: "--err", title: "Action needed" }
+        ], n)),
+        tile("On CRAN", onCran.length, [
+          badge(archived + " archived", archived ? "warning" : ""),
+          badge(notCran + " not on CRAN", "")
+        ], stackedBar([
+          { n: onCran.length, color: "--ok", title: "On CRAN" },
+          { n: archived, color: "--warn", title: "Archived" },
+          { n: notCran, color: "--none", title: "Not on CRAN" }
+        ], n)),
+        tile("CRAN checks", cranErr ? cranErr + " failing" : "All passing", [
+          badge(worst("OK") + " OK", "ok"),
+          badge(worst("NOTE") + " note", worst("NOTE") ? "note" : ""),
+          badge(worst("WARNING") + " warning", worst("WARNING") ? "warning" : ""),
+          badge(cranErr + " error", cranErr ? "error" : "")
+        ]),
+        tile("r-universe", inUniverse.length + " / " + n, [
+          badge(ruFailing + " with failing builds or checks", ruFailing ? "warning" : "ok"),
+          badge((n - inUniverse.length) + " not listed", "")
+        ]),
+        tile("Unreleased changes", unreleased.length, [
+          h("span", {}, "GitHub version ahead of CRAN")
+        ]),
+        tile("Open on GitHub", issues + prs, [
+          badge(issues + " issues", "info"),
+          badge(prs + " pull requests", prs ? "info" : "")
+        ])
+      );
+
+      // needs attention: error and warning items
+      const attention = pkgs
+        .map(p => ({ p, items: p.issues.filter(i => i.level !== "info") }))
+        .filter(x => x.items.length)
+        .sort((a, b) => (b.p.health === "error") - (a.p.health === "error") || a.p.package.localeCompare(b.p.package));
+
+      const attentionList = h("div", { class: "list" },
+        attention.length
+          ? attention.map(({ p, items }) => h("div", { class: "item" },
+              h("div", { class: "pkg" }, h("span", { class: "dot " + p.health }), packageLink(p)),
+              h("ul", {}, items.map(i => h("li", {}, h("span", { class: "dot " + i.level }), i.text)))))
+          : h("div", { class: "empty" }, "Nothing needs attention."));
+
+      // unreleased changes
+      const unreleasedList = h("div", { class: "list" },
+        unreleased.length
+          ? unreleased.map(p => h("div", { class: "item" },
+              h("div", { class: "pkg" }, packageLink(p)),
+              h("div", {}, h("span", { class: "version" }, p.cran.version + " → " + p.github.version),
+                " ", h("span", { class: "sub" }, "last commit " + relativeTime(p.github.last_commit)))))
+          : h("div", { class: "empty" }, "All CRAN packages are up to date with GitHub."));
+
+      // open pull requests
+      const withPrs = pkgs.filter(p => p.github.open_prs).sort((a, b) => b.github.open_prs - a.github.open_prs);
+      const prList = h("div", { class: "list" },
+        withPrs.length
+          ? withPrs.map(p => h("div", { class: "item" },
+              h("div", { class: "pkg" }, packageLink(p)),
+              h("div", {}, h("a", { href: p.github.url + "/pulls" }, p.github.open_prs + " open pull request" + (p.github.open_prs > 1 ? "s" : "")))))
+          : h("div", { class: "empty" }, "No open pull requests."));
+
+      content.replaceChildren(
+        tiles,
+        h("h2", {}, "Needs attention"),
+        attentionList,
+        h("div", { class: "columns" },
+          h("div", {}, h("h2", {}, "Unreleased changes"), unreleasedList),
+          h("div", {}, h("h2", {}, "Open pull requests"), prList))
+      );
+    }
+
+    loadStatus().then(render).catch(err => showError(document.getElementById("content"), err));
+  </script>
+</body>
+</html>

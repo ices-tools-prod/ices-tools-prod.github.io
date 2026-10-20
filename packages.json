@@ -1,0 +1,125 @@
+{
+  "_comment": "Packages shown on https://ices-tools-prod.github.io. Each entry needs the R package name and its GitHub repository (owner/name). Optional: \"notes\", shown on the package page.",
+  "packages": [
+    {
+      "package": "buseful",
+      "repo": "ices-tools-dev/b_useful"
+    },
+    {
+      "package": "fisheriesXplorer",
+      "repo": "ices-tools-prod/fisheriesXplorer"
+    },
+    {
+      "package": "fisheryO",
+      "repo": "ices-tools-prod/fisheryO"
+    },
+    {
+      "package": "flstockpile",
+      "repo": "ices-tools-prod/flstockpile"
+    },
+    {
+      "package": "icesAdvice",
+      "repo": "ices-tools-prod/icesAdvice"
+    },
+    {
+      "package": "icesASD",
+      "repo": "ices-tools-prod/icesASD"
+    },
+    {
+      "package": "icesConnect",
+      "repo": "ices-tools-prod/icesConnect"
+    },
+    {
+      "package": "icesConsistenSEA",
+      "repo": "ices-tools-dev/icesConsistenSEA"
+    },
+    {
+      "package": "icesDatras",
+      "repo": "ices-tools-prod/icesDatras"
+    },
+    {
+      "package": "icesDatsu",
+      "repo": "ices-tools-prod/icesDATSU"
+    },
+    {
+      "package": "icesDatsuQC",
+      "repo": "ices-tools-prod/icesDatsuQC"
+    },
+    {
+      "package": "icesDevops",
+      "repo": "ices-tools-prod/icesDevops"
+    },
+    {
+      "package": "icesFO",
+      "repo": "ices-tools-prod/icesFO"
+    },
+    {
+      "package": "icesRDBES",
+      "repo": "ices-tools-prod/icesRDBES"
+    },
+    {
+      "package": "icesSAG",
+      "repo": "ices-tools-prod/icesSAG"
+    },
+    {
+      "package": "icesSD",
+      "repo": "ices-tools-prod/icesSD"
+    },
+    {
+      "package": "icesSharePoint",
+      "repo": "ices-tools-prod/icesSharePoint"
+    },
+    {
+      "package": "icesTAF",
+      "repo": "ices-tools-prod/icesTAF"
+    },
+    {
+      "package": "icesTAFDB",
+      "repo": "ices-tools-prod/icesTAFDB"
+    },
+    {
+      "package": "icesTAFextra",
+      "repo": "ices-tools-dev/icesTAFextra"
+    },
+    {
+      "package": "icesUtils",
+      "repo": "ices-tools-dev/icesUtils"
+    },
+    {
+      "package": "icesVMS",
+      "repo": "ices-tools-prod/icesVMS"
+    },
+    {
+      "package": "icesVocab",
+      "repo": "ices-tools-prod/icesVocab"
+    },
+    {
+      "package": "msy",
+      "repo": "ices-tools-prod/msy"
+    },
+    {
+      "package": "rct3",
+      "repo": "ices-tools-prod/rct3"
+    },
+    {
+      "package": "RDBEScore",
+      "repo": "ices-tools-dev/RDBEScore"
+    },
+    {
+      "package": "RDBESvisualise",
+      "repo": "ices-tools-dev/RDBESvisualise"
+    },
+    {
+      "package": "seawiseEBFM",
+      "repo": "ices-tools-dev/seawise_tool_wp3"
+    },
+    {
+      "package": "sfdQC",
+      "repo": "ices-tools-dev/sfdQC"
+    },
+    {
+      "package": "sfdSAR",
+      "repo": "ices-tools-dev/sfdSAR"
+    }
+  ]
+}
