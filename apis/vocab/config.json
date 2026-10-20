@@ -1,0 +1,69 @@
+{
+  "id": "vocab",
+  "name": "ICES Vocabularies",
+  "description": "Code lists (vocabularies) used in ICES data: code types, the codes in each type, and the relations between them.",
+  "base_url": "https://vocab.ices.dk/services/api",
+  "website": "https://vocab.ices.dk",
+  "docs": "https://vocab.ices.dk/services/api/swagger/index.html",
+  "spec": "https://vocab.ices.dk/services/api/swagger/v1/swagger.json",
+  "packages": ["icesVocab"],
+  "notes": [
+    {
+      "topic": "Unknown code types and codes",
+      "observation": "An unknown code type or code returns HTTP 200 with an empty result, not 404: `Code/NoSuchType` gives `[]`, and `CodeDetail/Gear/NOSUCH` gives a record with `id` 0, an all-zero `guid` and empty relations.",
+      "affects": "`getCodeList()` and `getCodeDetail()` return empty results rather than an error for a misspelt code type or code."
+    },
+    {
+      "topic": "Size of code details",
+      "observation": "`CodeDetail` includes every related code, so it can be large: `CodeDetail/ISO_3166/DK` is about 1 MB.",
+      "affects": "`getCodeDetail()` can be slow for widely used codes."
+    },
+    {
+      "topic": "Case of field names",
+      "observation": "Field names are camelCase throughout (`id`, `guid`, `key`, `longDescription`, `firstGUID`).",
+      "affects": "icesVocab converts them with `CamelCase()`; the change check reports any change of case."
+    },
+    {
+      "topic": "Documentation",
+      "observation": "The documentation lists two operations not used by icesVocab: `Code?codeID=` and `CodeTypeRelation`.",
+      "affects": "Nothing at present."
+    }
+  ],
+  "endpoints": [
+    {
+      "name": "Code",
+      "path": "Code/Gear",
+      "functions": ["getCodeList", "findCode"]
+    },
+    {
+      "name": "Code, by code",
+      "path": "Code/SpecWoRMS?code=126436",
+      "functions": ["getCodeList"]
+    },
+    {
+      "name": "Code, modified since",
+      "path": "Code/Gear?modified=2025-01-01",
+      "functions": ["getCodeList"]
+    },
+    {
+      "name": "CodeType",
+      "path": "CodeType",
+      "functions": ["getCodeTypeList", "findCodeType", "findCode"]
+    },
+    {
+      "name": "CodeType, by code type",
+      "path": "CodeType?codeType=Gear",
+      "functions": ["getCodeTypeList"]
+    },
+    {
+      "name": "CodeDetail",
+      "path": "CodeDetail/SpecWoRMS/101170",
+      "functions": ["getCodeDetail"]
+    },
+    {
+      "name": "CodeType Relation",
+      "path": "CodeType/Relation/Pargroup/PARAM",
+      "functions": ["getCodeTypeRelation"]
+    }
+  ]
+}

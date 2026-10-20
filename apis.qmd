@@ -13,7 +13,9 @@ is called with example values, and the structure of the response (the names
 of the fields, their types, and the format of text values such as dates) is
 compared with a recorded baseline. This finds changes that can break the
 packages, such as a field renamed from `AssessmentKey` to `assessmentKey`, a
-field removed, or a number returned as text. Checked `r updated(apis)`.
+field removed, or a number returned as text. Where the API has
+machine-readable documentation, changes to the documented operations and
+their parameters are also found. Checked `r updated(apis)`.
 
 ```{r}
 #| results: asis
@@ -30,20 +32,22 @@ md_table(
       )),
       Endpoints = sprintf("%d: %d unchanged, %d changed, %d with errors", nrow(eps), n[["ok"]], n[["changed"]], n[["error"]]),
       `Median time (s)` = median(eps$time_s, na.rm = TRUE),
+      Documentation = if (!is.null(a$docs)) sprintf("[%s](%s)", if (is.null(a$spec)) "Yes" else paste(length(a$spec$operations), "operations"), a$docs) else "None",
       `Used by` = paste(package_link(c(users$direct, users$via), status), collapse = ", "),
       check.names = FALSE
     )
   })),
-  align = "llllr"
+  align = "lllrll"
 )
 ```
 
 ## Adding an API or endpoint
 
-The web services and endpoints are listed in
-[apis.json](https://github.com/ices-tools-prod/ices-tools-prod.github.io/blob/main/apis.json).
-For each endpoint, give a path with example query values that return a stable
-result, such as a published assessment.
+Each web service has a folder in
+[apis/](https://github.com/ices-tools-prod/ices-tools-prod.github.io/tree/main/apis),
+with a `config.json` that lists its endpoints, its documentation, and notes
+shown on its page. For each endpoint, give a path with example query values
+that return a stable result, such as a published assessment.
 
 ## Accepting a change
 
@@ -54,4 +58,4 @@ use the new field names, record a new baseline:
 Rscript scripts/check_apis.R --update-baseline
 ```
 
-and commit the files in `api-baselines/`.
+and commit the `baseline.json` files in `apis/`.

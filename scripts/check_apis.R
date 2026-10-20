@@ -1,10 +1,13 @@
-# Check the web services listed in apis.json, and write the results to
-# data/apis.json for the pages to display.
+# Check the web services set up in apis/<id>/config.json, and write the
+# results to data/apis.json for the pages to display.
 #
 # Each endpoint is called, and the structure of its response (the field
 # names, their types, and the format of text values) is compared with the
-# baseline in api-baselines/<id>.json, to find changes such as fields being
+# baseline in apis/<id>/baseline.json, to find changes such as fields being
 # renamed (including changes of case), added or removed, or changing type.
+#
+# If the API has an OpenAPI (swagger) description, the documented operations
+# and their parameters are also compared with the baseline.
 #
 # Quarto runs this script before rendering the site (see pre-render in
 # _quarto.yml). It can also be run from the repository root:
@@ -13,9 +16,10 @@
 #
 # To accept the current responses as the new baseline, run:
 #
-#   Rscript scripts/check_apis.R --update-baseline
+#   Rscript scripts/check_apis.R --update-baseline vocab
 #
-# and commit the files in api-baselines/.
+# giving the ids of the APIs to update, or no ids to update them all,
+# and commit the baseline.json files in apis/.
 #
 # If data/apis.json is less than max_age_hours old, it is not rebuilt. Set
 # STATUS_REFRESH=true to force a rebuild.
@@ -24,14 +28,16 @@
 
 library(jsonlite)
 
-config_file <- "apis.json"
+config_dir <- "apis"
 out_file <- file.path("data", "apis.json")
-baseline_dir <- "api-baselines"
 max_age_hours <- 6
 # number of array elements looked at when describing a response
 max_elements <- 500
 
-update_baseline <- "--update-baseline" %in% commandArgs(TRUE)
+args <- commandArgs(TRUE)
+update_baseline <- "--update-baseline" %in% args
+# APIs to update the baseline for; all if none are given
+update_ids <- setdiff(args, "--update-baseline")
 
 if (!update_baseline && file.exists(out_file) && !identical(Sys.getenv("STATUS_REFRESH"), "true")) {
   age <- difftime(Sys.time(), file.mtime(out_file), units = "hours")
@@ -187,24 +193,116 @@ check_endpoint <- function(api, ep) {
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 
+# the documented operations -------------------------------------------------------
+
+# the operations in an OpenAPI description, with their parameters
+summarise_spec <- function(spec) {
+  ops <- list()
+  for (path in names(spec$paths)) {
+    for (method in intersect(names(spec$paths[[path]]), c("get", "post", "put", "patch", "delete"))) {
+      o <- spec$paths[[path]][[method]]
+      params <- lapply(o$parameters, function(x) {
+        paste0(x[["in"]] %||% "", ", ", x$schema$type %||% "", if (isTRUE(x$required)) ", required" else "")
+      })
+      names(params) <- vapply(o$parameters, function(x) x$name %||% "", "")
+      ops[[paste(toupper(method), path)]] <- list(
+        method = toupper(method),
+        path = path,
+        summary = o$summary %||% "",
+        parameters = params
+      )
+    }
+  }
+  ops
+}
+
+compare_spec <- function(current, baseline) {
+  changes <- character(0)
+  removed <- setdiff(names(baseline), names(current))
+  added <- setdiff(names(current), names(baseline))
+  for (r in removed) {
+    match <- added[tolower(added) == tolower(r)]
+    if (length(match)) {
+      changes <- c(changes, paste0("Operation `", r, "` renamed to `", match[1], "` (change of case)"))
+      added <- setdiff(added, match[1])
+    } else {
+      changes <- c(changes, paste0("Operation `", r, "` removed"))
+    }
+  }
+  changes <- c(changes, paste0("Operation `", added, "` added")[length(added) > 0])
+  for (op in intersect(names(current), names(baseline))) {
+    old <- baseline[[op]]$parameters
+    new <- current[[op]]$parameters
+    p_removed <- setdiff(names(old), names(new))
+    p_added <- setdiff(names(new), names(old))
+    for (r in p_removed) {
+      match <- p_added[tolower(p_added) == tolower(r)]
+      if (length(match)) {
+        changes <- c(changes, paste0("`", op, "`: parameter `", r, "` renamed to `", match[1], "` (change of case)"))
+        p_added <- setdiff(p_added, match[1])
+      } else {
+        changes <- c(changes, paste0("`", op, "`: parameter `", r, "` removed"))
+      }
+    }
+    changes <- c(changes, paste0("`", op, "`: parameter `", p_added, "` added")[length(p_added) > 0])
+    for (p in intersect(names(old), names(new))) {
+      if (!identical(old[[p]], new[[p]])) {
+        changes <- c(changes, paste0("`", op, "`: parameter `", p, "` changed from (", old[[p]], ") to (", new[[p]], ")"))
+      }
+    }
+  }
+  changes
+}
+
+check_spec <- function(api, endpoints) {
+  if (is.null(api$spec)) {
+    return(NULL)
+  }
+  msg(api$id, ": documentation")
+  spec <- tryCatch(fromJSON(api$spec, simplifyVector = FALSE), error = function(e) e)
+  if (inherits(spec, "error")) {
+    return(list(url = api$spec, error = conditionMessage(spec)))
+  }
+  ops <- summarise_spec(spec)
+
+  # which checked endpoints call each operation
+  endpoint_paths <- tolower(vapply(endpoints, function(e) sub("\\?.*$", "", e$url), ""))
+  for (op in names(ops)) {
+    pattern <- paste0(gsub("\\{[^}]+\\}", "[^/]+", tolower(ops[[op]]$path)), "$")
+    checked <- grepl(pattern, endpoint_paths) & ops[[op]]$method == "GET"
+    ops[[op]]$checked <- I(unique(vapply(endpoints[checked], `[[`, "", "name")))
+  }
+
+  list(
+    url = api$spec,
+    title = spec$info$title,
+    version = spec$info$version,
+    operations = ops
+  )
+}
+
+
 # run ------------------------------------------------------------------------------
 
-config <- fromJSON(config_file, simplifyDataFrame = FALSE)
-dir.create(baseline_dir, showWarnings = FALSE)
+config_files <- Sys.glob(file.path(config_dir, "*", "config.json"))
+configs <- lapply(config_files, fromJSON, simplifyDataFrame = FALSE)
 
-results <- lapply(config$apis, function(api) {
+results <- lapply(seq_along(configs), function(i) {
+  api <- configs[[i]]
   endpoints <- lapply(api$endpoints, check_endpoint, api = api)
+  spec <- check_spec(api, endpoints)
 
-  baseline_file <- file.path(baseline_dir, paste0(api$id, ".json"))
+  baseline_file <- file.path(dirname(config_files[i]), "baseline.json")
 
-  if (update_baseline) {
+  if (update_baseline && (!length(update_ids) || api$id %in% update_ids)) {
     baseline <- list(
       recorded = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
       endpoints = lapply(endpoints, function(e) {
         e <- e[c("name", "url", "http_status", "content_type", "fields")]
         if (!is.null(e$fields)) e$fields <- lapply(e$fields, I)
         e
-      })
+      }),
+      spec = if (!is.null(spec$operations)) lapply(spec$operations, function(o) o[c("method", "path", "parameters")])
     )
     writeLines(toJSON(baseline, auto_unbox = TRUE, pretty = TRUE, null = "null"), baseline_file)
     msg("wrote ", baseline_file)
@@ -230,17 +328,31 @@ results <- lapply(config$apis, function(api) {
     e
   })
 
+  if (!is.null(spec$operations)) {
+    if (!is.null(baseline$spec)) {
+      spec$changes <- I(compare_spec(spec$operations, baseline$spec))
+    }
+    spec$operations <- unname(lapply(spec$operations, function(o) {
+      o$parameters <- I(if (length(o$parameters)) paste0(names(o$parameters), " (", unlist(o$parameters), ")") else character(0))
+      o
+    }))
+  }
+
   status <- vapply(endpoints, `[[`, "", "status")
+  spec_problem <- !is.null(spec$error) || length(spec$changes) > 0
   list(
     id = api$id,
     name = api$name,
     description = api$description,
     base_url = api$base_url,
     website = api$website,
+    docs = api$docs,
     packages = I(unlist(api$packages)),
+    notes = api$notes,
     baseline_recorded = baseline$recorded,
-    health = if (any(status == "error")) "error" else if (any(status %in% c("changed", "no baseline"))) "warning" else "ok",
-    endpoints = endpoints
+    health = if (any(status == "error")) "error" else if (any(status %in% c("changed", "no baseline")) || spec_problem) "warning" else "ok",
+    endpoints = endpoints,
+    spec = spec
   )
 })
 

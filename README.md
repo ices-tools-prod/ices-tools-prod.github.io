@@ -19,32 +19,46 @@ repositories are left out, as the site is public. After editing the file on
 
 ## Web services
 
-The web services (APIs) and endpoints that are checked are listed in
-[`apis.json`](apis.json). Each endpoint has a path with example query values,
-which should return a stable result (for example a published assessment),
-and the R functions that call it.
+Each web service (API) that is checked has a folder in [`apis/`](apis), named
+by its id (e.g. `apis/sag/`), containing:
+
+- `config.json`: the name, base url, documentation, the packages that call
+  it, notes shown in a table on its page, and the endpoints to check. Each
+  endpoint has a path with example query values, which should return a
+  stable result (for example a published assessment), and the R functions
+  that call it.
+- `baseline.json`: the recorded structure of each endpoint's response, and
+  the documented operations and parameters.
+
+To add an API, copy a folder, edit `config.json`, and record its baseline
+(see below).
 
 Every day, each endpoint is called and the structure of its response (the
 field names, their types, and the format of text values such as dates and
-numbers stored as text) is compared with the baseline in `api-baselines/`.
+numbers stored as text) is compared with the baseline. If the API has an
+OpenAPI (swagger) description, set as `spec` in `config.json`, the
+documented operations and their parameters are compared too.
 Changes are reported on the site: fields renamed (including changes of case,
 such as `AssessmentKey` to `assessmentKey`), added or removed, fields
 changing type, and changes in the HTTP status or content type.
 
-When a change is expected, record a new baseline and commit it:
+When a change is expected, or for a new API, record a new baseline for it
+and commit it:
 
 ```sh
-Rscript scripts/check_apis.R --update-baseline
-git add api-baselines
+Rscript scripts/check_apis.R --update-baseline sag
+git add apis/sag/baseline.json
 ```
+
+Without an id, the baselines of all APIs are updated.
 
 ## Files
 
 | File | Contents |
 |---|---|
 | `packages.json` | the packages shown |
-| `apis.json` | the web services and endpoints checked |
-| `api-baselines/` | the recorded structure of each endpoint's response |
+| `apis/<id>/config.json` | a web service and its endpoints |
+| `apis/<id>/baseline.json` | the recorded structure of its responses and documentation |
 | `index.qmd` | the overview page |
 | `packages.qmd` | the table of all packages |
 | `apis.qmd` | the overview of the web services |

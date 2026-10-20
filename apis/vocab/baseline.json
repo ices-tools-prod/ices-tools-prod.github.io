@@ -1,0 +1,225 @@
+{
+  "recorded": "2026-10-20T21:41:00Z",
+  "endpoints": [
+    {
+      "name": "Code",
+      "url": "https://vocab.ices.dk/services/api/Code/Gear",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].codeTypeGUID": ["string"],
+        "[].codeTypeID": ["number"],
+        "[].deprecated": ["boolean"],
+        "[].description": ["string"],
+        "[].guid": ["string"],
+        "[].id": ["number"],
+        "[].key": ["string"],
+        "[].longDescription": ["string", "string (empty)"],
+        "[].modified": ["string (date-time)"]
+      }
+    },
+    {
+      "name": "Code, by code",
+      "url": "https://vocab.ices.dk/services/api/Code/SpecWoRMS?code=126436",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].codeTypeGUID": ["string"],
+        "[].codeTypeID": ["number"],
+        "[].deprecated": ["boolean"],
+        "[].description": ["string"],
+        "[].guid": ["string"],
+        "[].id": ["number"],
+        "[].key": ["string (number)"],
+        "[].longDescription": ["string"],
+        "[].modified": ["string (date-time)"]
+      }
+    },
+    {
+      "name": "Code, modified since",
+      "url": "https://vocab.ices.dk/services/api/Code/Gear?modified=2025-01-01",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].codeTypeGUID": ["string"],
+        "[].codeTypeID": ["number"],
+        "[].deprecated": ["boolean"],
+        "[].description": ["string"],
+        "[].guid": ["string"],
+        "[].id": ["number"],
+        "[].key": ["string"],
+        "[].longDescription": ["string", "string (empty)"],
+        "[].modified": ["string (date-time)"]
+      }
+    },
+    {
+      "name": "CodeType",
+      "url": "https://vocab.ices.dk/services/api/CodeType",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].description": ["string"],
+        "[].guid": ["string"],
+        "[].id": ["number"],
+        "[].key": ["string"],
+        "[].longDescription": ["string", "string (empty)"],
+        "[].modified": ["string (date-time)"]
+      }
+    },
+    {
+      "name": "CodeType, by code type",
+      "url": "https://vocab.ices.dk/services/api/CodeType?codeType=Gear",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].description": ["string"],
+        "[].guid": ["string"],
+        "[].id": ["number"],
+        "[].key": ["string"],
+        "[].longDescription": ["string (empty)"],
+        "[].modified": ["string (date-time)"]
+      }
+    },
+    {
+      "name": "CodeDetail",
+      "url": "https://vocab.ices.dk/services/api/CodeDetail/SpecWoRMS/101170",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["object"],
+        "attribute": ["array"],
+        "childRelation": ["array"],
+        "childRelation[]": ["object"],
+        "childRelation[].code": ["object"],
+        "childRelation[].code.codeTypeGUID": ["string"],
+        "childRelation[].code.codeTypeID": ["number"],
+        "childRelation[].code.deprecated": ["boolean"],
+        "childRelation[].code.description": ["string"],
+        "childRelation[].code.guid": ["string"],
+        "childRelation[].code.id": ["number"],
+        "childRelation[].code.key": ["string"],
+        "childRelation[].code.longDescription": ["string (empty)"],
+        "childRelation[].code.modified": ["string (date-time)"],
+        "childRelation[].codeType": ["object"],
+        "childRelation[].codeType.description": ["string"],
+        "childRelation[].codeType.guid": ["string"],
+        "childRelation[].codeType.id": ["number"],
+        "childRelation[].codeType.key": ["string"],
+        "childRelation[].codeType.longDescription": ["string", "string (empty)"],
+        "childRelation[].codeType.modified": ["string (date-time)"],
+        "childRelation[].modified": ["string (date-time)"],
+        "codeTypeGUID": ["string"],
+        "codeTypeID": ["number"],
+        "deprecated": ["boolean"],
+        "description": ["string"],
+        "externalRelation": ["array"],
+        "guid": ["string"],
+        "id": ["number"],
+        "key": ["string (number)"],
+        "longDescription": ["string (empty)"],
+        "modified": ["string (date-time)"],
+        "parentRelation": ["array"],
+        "parentRelation[]": ["object"],
+        "parentRelation[].code": ["object"],
+        "parentRelation[].code.codeTypeGUID": ["string"],
+        "parentRelation[].code.codeTypeID": ["number"],
+        "parentRelation[].code.deprecated": ["boolean"],
+        "parentRelation[].code.description": ["string"],
+        "parentRelation[].code.guid": ["string"],
+        "parentRelation[].code.id": ["number"],
+        "parentRelation[].code.key": ["string"],
+        "parentRelation[].code.longDescription": ["string (empty)"],
+        "parentRelation[].code.modified": ["string (date-time)"],
+        "parentRelation[].codeType": ["object"],
+        "parentRelation[].codeType.description": ["string"],
+        "parentRelation[].codeType.guid": ["string"],
+        "parentRelation[].codeType.id": ["number"],
+        "parentRelation[].codeType.key": ["string"],
+        "parentRelation[].codeType.longDescription": ["string (empty)"],
+        "parentRelation[].codeType.modified": ["string (date-time)"],
+        "parentRelation[].modified": ["string (date-time)"],
+        "synonym": ["array"]
+      }
+    },
+    {
+      "name": "CodeType Relation",
+      "url": "https://vocab.ices.dk/services/api/CodeType/Relation/Pargroup/PARAM",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].firstCodeType": ["string"],
+        "[].firstGUID": ["string"],
+        "[].firstID": ["number"],
+        "[].firstKey": ["string"],
+        "[].modified": ["string (date-time)"],
+        "[].secondCodeType": ["string"],
+        "[].secondGUID": ["string"],
+        "[].secondID": ["number"],
+        "[].secondKey": ["string"]
+      }
+    }
+  ],
+  "spec": {
+    "GET /Code/{codeType}": {
+      "method": "GET",
+      "path": "/Code/{codeType}",
+      "parameters": {
+        "codeType": "path, string, required",
+        "code": "query, string",
+        "modified": "query, string"
+      }
+    },
+    "GET /Code": {
+      "method": "GET",
+      "path": "/Code",
+      "parameters": {
+        "codeID": "query, integer"
+      }
+    },
+    "GET /CodeDetail/{codeType}/{code}": {
+      "method": "GET",
+      "path": "/CodeDetail/{codeType}/{code}",
+      "parameters": {
+        "codeType": "path, string, required",
+        "code": "path, string, required"
+      }
+    },
+    "GET /CodeType": {
+      "method": "GET",
+      "path": "/CodeType",
+      "parameters": {
+        "codeType": "query, string",
+        "codeTypeID": "query, integer",
+        "modified": "query, string"
+      }
+    },
+    "GET /CodeType/Relation/{firstCodeType}/{secondCodeType}": {
+      "method": "GET",
+      "path": "/CodeType/Relation/{firstCodeType}/{secondCodeType}",
+      "parameters": {
+        "firstCodeType": "path, string, required",
+        "secondCodeType": "path, string, required",
+        "modified": "query, string"
+      }
+    },
+    "GET /CodeTypeRelation": {
+      "method": "GET",
+      "path": "/CodeTypeRelation",
+      "parameters": {
+        "modified": "query, string"
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ users <- api_packages(api, status)
 #| results: asis
 md(api$description %||% "")
 md("Base url: `", api$base_url, "`",
+   if (!is.null(api$docs)) paste0(" · [Documentation](", api$docs, ")"),
    if (!is.null(api$website)) paste0(" · [Website](", api$website, ")"))
 md("Checked ", updated(apis), ". ",
    if (!is.null(api$baseline_recorded)) paste0("Responses are compared with the baseline recorded on ", substr(api$baseline_recorded, 1, 10), ".")
@@ -30,7 +31,22 @@ md("**Directly:** ", if (length(users$direct)) paste(package_link(users$direct, 
 md("**Through a dependency:** ", if (length(users$via)) paste(package_link(users$via, status, from = "api"), collapse = ", ") else "none")
 ```
 
-## Endpoints
+## Notes
+
+```{r}
+#| results: asis
+if (length(api$notes)) {
+  md_table(data.frame(
+    Topic = vapply(api$notes, `[[`, "", "topic"),
+    Observation = vapply(api$notes, `[[`, "", "observation"),
+    Affects = vapply(api$notes, function(n) n$affects %||% "", "")
+  ))
+} else {
+  md("No notes.")
+}
+```
+
+## Endpoints checked
 
 ```{r}
 #| results: asis
@@ -60,10 +76,36 @@ errors <- unlist(lapply(api$endpoints, function(e) if (!is.null(e$error)) paste0
 md_list(c(errors, changes), empty = "No changes: every endpoint returns the same structure as the baseline.")
 ```
 
+## Documented operations
+
+```{r}
+#| results: asis
+sp <- api$spec
+if (is.null(sp)) {
+  md("No machine-readable documentation, so changes to the operations and parameters are not checked.")
+} else if (!is.null(sp$error)) {
+  md("The [documentation](", sp$url, ") could not be read: ", sp$error)
+} else {
+  ops <- sp$operations
+  n_checked <- sum(vapply(ops, function(o) length(o$checked) > 0, logical(1)))
+  md("The [documentation](", api$docs %||% sp$url, ") (", sp$title, " ", sp$version, ") lists ",
+     length(ops), " operations, of which ", n_checked, " are checked here. ",
+     if (length(sp$changes)) "Changes since the baseline:" else "No changes to the operations or their parameters since the baseline.")
+  md_list(unlist(sp$changes), empty = "")
+  md_table(data.frame(
+    Operation = vapply(ops, function(o) paste0("`", o$method, " ", o$path, "`"), ""),
+    Parameters = vapply(ops, function(o) if (length(o$parameters)) paste(unlist(o$parameters), collapse = "<br>") else "", ""),
+    Checked = vapply(ops, function(o) paste(unlist(o$checked), collapse = ", "), "")
+  ))
+}
+```
+
+## Endpoint details
+
 ```{r}
 #| results: asis
 for (e in api$endpoints) {
-  md("## ", e$name, ' {#', gsub("[^a-z0-9]+", "-", tolower(e$name)), '}')
+  md("### ", e$name, ' {#', gsub("[^a-z0-9]+", "-", tolower(e$name)), '}')
   md("`", e$url, "`")
   md("Called by: ", paste0("`", unlist(e$functions), "()`", collapse = ", "))
   info <- c(

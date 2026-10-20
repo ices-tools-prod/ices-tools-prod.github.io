@@ -1,5 +1,5 @@
 # Create one page per package (package/<name>.qmd) and per API
-# (api/<id>.qmd), from packages.json and apis.json. Each page sets the
+# (api/<id>.qmd), from packages.json and apis/<id>/config.json. Each page sets the
 # package name or API id, and includes the template _package.qmd or _api.qmd.
 #
 # Quarto runs this script before rendering the site (see pre-render in
@@ -32,7 +32,7 @@ make_pages <- function(dir, names, variable, template, titles = names) {
 }
 
 packages <- fromJSON("packages.json", simplifyDataFrame = FALSE)$packages
-apis <- fromJSON("apis.json", simplifyDataFrame = FALSE)$apis
+apis <- lapply(Sys.glob("apis/*/config.json"), fromJSON, simplifyDataFrame = FALSE)
 
 make_pages("package", vapply(packages, `[[`, "", "package"), "pkg", "_package.qmd")
 make_pages("api", vapply(apis, `[[`, "", "id"), "api_id", "_api.qmd",

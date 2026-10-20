@@ -1,0 +1,99 @@
+{
+  "id": "sag",
+  "name": "Stock Assessment Graphs (SAG)",
+  "description": "Stock assessment summaries, reference points and stock status from the ICES Stock Assessment Graphs database.",
+  "base_url": "https://sag.ices.dk/SAG_API/api",
+  "website": "https://sag.ices.dk",
+  "docs": "https://sag.ices.dk/sag_api/docs/swagger/index.html",
+  "spec": "https://sag.ices.dk/sag_api/docs/swagger/v2/swagger.json",
+  "packages": ["icesSAG"],
+  "notes": [
+    {
+      "topic": "Filtering StockList by stock",
+      "observation": "`StockList?fishStock=` returns 204 No Content for every value tried (stock label `ple.27.420`, StockKey, StockDatabaseID), with or without `year`. Filtering by `assessmentKey` works.",
+      "affects": "`getListStocks(stock = )` returns no data."
+    },
+    {
+      "topic": "Modified dates",
+      "observation": "Every record in `StockList` has `ModifiedDate` set to the time of the nightly update (e.g. `20-10-2026 02:00:03`), so `modifiedAfter` returns all assessments. The dates are day-month-year, not ISO 8601.",
+      "affects": "`getListStocks(modifiedAfter = )` can not find recently changed assessments."
+    },
+    {
+      "topic": "Case of field names",
+      "observation": "Field names mix PascalCase (`AssessmentKey`, `StockKeyLabel`) and camelCase (`lineNumber`, `fishingPressure`, `settingKey`), sometimes within one endpoint.",
+      "affects": "Code that uses field names; the change check reports any change of case."
+    },
+    {
+      "topic": "Type of AssessmentKey",
+      "observation": "`AssessmentKey` is text in `StockSettings` and `StockDownload`, and a number in `StockList`, `SummaryTable`, `StockStatusValues` and `FishStockReferencePoints`. In the documentation the `assessmentKey` parameter is text for `FishStockReferencePoints` and the image endpoints, and an integer elsewhere.",
+      "affects": "Joining results from different endpoints on `AssessmentKey`."
+    },
+    {
+      "topic": "Text values",
+      "observation": "`Status` has surrounding spaces (`\" Published \"`). Numbers such as `StockKey` and `StockDatabaseID` are returned as text.",
+      "affects": "Comparisons on these fields need `trimws()` or conversion."
+    },
+    {
+      "topic": "Base path",
+      "observation": "The documentation gives the base path `/sag_api`, icesSAG uses `/SAG_API`; both work. Parameter names are not case sensitive (icesSAG sends `SAGChartKey`, the documentation has `sagChartKey`).",
+      "affects": "Nothing at present."
+    },
+    {
+      "topic": "Documentation",
+      "observation": "The API root (`/SAG_API/`) shows a default ASP.NET page; the documentation is at `/sag_api/docs/swagger/`. It lists `PublishSag/Run` and `PublishSag/Test` as GET operations, which are not called by this check.",
+      "affects": "Nothing at present."
+    }
+  ],
+  "endpoints": [
+    {
+      "name": "StockList",
+      "path": "StockList?year=2024",
+      "functions": ["getListStocks", "findAssessmentKey"]
+    },
+    {
+      "name": "StockList, by stock",
+      "path": "StockList?year=2024&fishStock=ple.27.420",
+      "functions": ["getListStocks"]
+    },
+    {
+      "name": "LatestStockAdviceList",
+      "path": "LatestStockAdviceList",
+      "functions": ["getLatestStockAdviceList"]
+    },
+    {
+      "name": "SummaryTable",
+      "path": "SummaryTable?assessmentKey=18688",
+      "functions": ["getSummaryTable", "getSAG"]
+    },
+    {
+      "name": "StockStatusValues",
+      "path": "StockStatusValues?assessmentKey=18688",
+      "functions": ["getStockStatusValues"]
+    },
+    {
+      "name": "FishStockReferencePoints",
+      "path": "FishStockReferencePoints?assessmentKey=18688",
+      "functions": ["getFishStockReferencePoints"]
+    },
+    {
+      "name": "StockDownload",
+      "path": "StockDownload?assessmentKey=18688",
+      "functions": ["getStockDownloadData"]
+    },
+    {
+      "name": "StockSettings",
+      "path": "StockSettings?assessmentKey=18688",
+      "functions": ["getSAGSettingsForAStock"]
+    },
+    {
+      "name": "SAGTypeCharts",
+      "path": "SAGTypeCharts",
+      "functions": ["getSAGTypeGraphs"]
+    },
+    {
+      "name": "SettingsForChartType",
+      "path": "SettingsForChartType?SAGChartKey=1",
+      "functions": ["getSAGTypeSettings"]
+    }
+  ]
+}

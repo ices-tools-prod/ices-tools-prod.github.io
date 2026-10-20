@@ -1,5 +1,5 @@
 {
-  "recorded": "2026-10-20T21:12:36Z",
+  "recorded": "2026-10-20T21:35:26Z",
   "endpoints": [
     {
       "name": "StockList",
@@ -444,5 +444,186 @@
         "[].settingKey": ["string (number)"]
       }
     }
-  ]
+  ],
+  "spec": {
+    "GET /api/AdviceLink/{assessmentKey}": {
+      "method": "GET",
+      "path": "/api/AdviceLink/{assessmentKey}",
+      "parameters": {
+        "assessmentKey": "path, integer, required"
+      }
+    },
+    "GET /LatestStocks/Download": {
+      "method": "GET",
+      "path": "/LatestStocks/Download",
+      "parameters": {
+        "ecoregion": "query, string"
+      }
+    },
+    "GET /LatestStocks/Status": {
+      "method": "GET",
+      "path": "/LatestStocks/Status",
+      "parameters": {
+        "ecoregion": "query, string"
+      }
+    },
+    "GET /LatestStocks/Settings": {
+      "method": "GET",
+      "path": "/LatestStocks/Settings",
+      "parameters": {
+        "ecoregion": "query, string"
+      }
+    },
+    "GET /PublishSag/Run": {
+      "method": "GET",
+      "path": "/PublishSag/Run",
+      "parameters": {}
+    },
+    "GET /PublishSag/Test": {
+      "method": "GET",
+      "path": "/PublishSag/Test",
+      "parameters": {}
+    },
+    "GET /api/StockList": {
+      "method": "GET",
+      "path": "/api/StockList",
+      "parameters": {
+        "year": "query, integer",
+        "modifiedAfter": "query, string",
+        "fishStock": "query, string",
+        "assessmentKey": "query, integer"
+      }
+    },
+    "GET /api/LatestStockAdviceList": {
+      "method": "GET",
+      "path": "/api/LatestStockAdviceList",
+      "parameters": {}
+    },
+    "GET /api/SAGTypeCharts": {
+      "method": "GET",
+      "path": "/api/SAGTypeCharts",
+      "parameters": {}
+    },
+    "GET /api/StockDownload": {
+      "method": "GET",
+      "path": "/api/StockDownload",
+      "parameters": {
+        "assessmentKey": "query, integer"
+      }
+    },
+    "GET /api/FishStockReferencePoints": {
+      "method": "GET",
+      "path": "/api/FishStockReferencePoints",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "token": "query, string"
+      }
+    },
+    "GET /api/StockSettings": {
+      "method": "GET",
+      "path": "/api/StockSettings",
+      "parameters": {
+        "assessmentKey": "query, integer",
+        "token": "query, string"
+      }
+    },
+    "POST /api/UploadStock": {
+      "method": "POST",
+      "path": "/api/UploadStock",
+      "parameters": {
+        "sessionId": "query, integer"
+      }
+    },
+    "GET /api/SummaryTable": {
+      "method": "GET",
+      "path": "/api/SummaryTable",
+      "parameters": {
+        "assessmentKey": "query, integer",
+        "token": "query, string"
+      }
+    },
+    "GET /api/SAGDownload": {
+      "method": "GET",
+      "path": "/api/SAGDownload",
+      "parameters": {
+        "year": "query, string",
+        "EcoRegion": "query, string",
+        "Species": "query, string"
+      }
+    },
+    "GET /api/StockStatusValues": {
+      "method": "GET",
+      "path": "/api/StockStatusValues",
+      "parameters": {
+        "assessmentKey": "query, integer"
+      }
+    },
+    "GET /api/SettingsForChartType": {
+      "method": "GET",
+      "path": "/api/SettingsForChartType",
+      "parameters": {
+        "sagChartKey": "query, string"
+      }
+    },
+    "GET /api/get_image": {
+      "method": "GET",
+      "path": "/api/get_image",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "type": "query, string",
+        "width": "query, integer",
+        "forceRefresh": "query, boolean",
+        "token": "query, string"
+      }
+    },
+    "GET /api/get_custom_plot": {
+      "method": "GET",
+      "path": "/api/get_custom_plot",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "sgKey": "query, integer",
+        "width": "query, integer",
+        "forceRefresh": "query, boolean",
+        "token": "query, string"
+      }
+    },
+    "GET /api/get_ppt_custom": {
+      "method": "GET",
+      "path": "/api/get_ppt_custom",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "token": "query, string",
+        "forceRefresh": "query, boolean"
+      }
+    },
+    "GET /api/get_archive": {
+      "method": "GET",
+      "path": "/api/get_archive",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "size": "query, string",
+        "token": "query, string",
+        "forceRefresh": "query, boolean"
+      }
+    },
+    "GET /api/get_plot_path": {
+      "method": "GET",
+      "path": "/api/get_plot_path",
+      "parameters": {
+        "assessmentKey": "query, string",
+        "sgKey": "query, integer",
+        "size": "query, string",
+        "width": "query, integer",
+        "forceRefresh": "query, boolean",
+        "token": "query, string"
+      }
+    },
+    "GET /StockXMLDownload/{assessmentKey}": {
+      "method": "GET",
+      "path": "/StockXMLDownload/{assessmentKey}",
+      "parameters": {
+        "assessmentKey": "path, string, required"
+      }
+    }
+  }
 }
