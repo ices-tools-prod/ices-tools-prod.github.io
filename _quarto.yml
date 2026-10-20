@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: _site
+  # collect the package status into data/status.json before rendering
+  pre-render: scripts/build_status.R
+  render:
+    - index.qmd
+    - packages.qmd
+
+website:
+  title: "ICES R packages"
+  site-url: https://ices-tools-prod.github.io
+  repo-url: https://github.com/ices-tools-prod/ices-tools-prod.github.io
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: packages.qmd
+        text: Packages
+    right:
+      - icon: github
+        href: https://github.com/ices-tools-prod/ices-tools-prod.github.io
+        aria-label: GitHub repository
+  page-footer:
+    left: >
+      Packages are listed in
+      [packages.json](https://github.com/ices-tools-prod/ices-tools-prod.github.io/blob/main/packages.json).
+    right: >
+      Status from CRAN, the ICES [r-universe](https://ices-tools-prod.r-universe.dev)
+      and GitHub, updated daily.
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+
+execute:
+  echo: false
+  warning: false
+  message: false

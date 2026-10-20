@@ -1,0 +1,123 @@
+---
+title: "Packages"
+page-layout: full
+---
+
+```{r}
+source("R/status.R")
+library(reactable)
+
+status <- read_status()
+tab <- status_table(status)
+pkgs <- status$packages
+```
+
+All `r nrow(tab)` packages, updated `r updated(status)`. Select a row to see
+the package details, or search and filter using the boxes under each column
+heading.
+
+```{r}
+# details shown when a row is expanded
+package_details <- function(index) {
+  pk <- pkgs[[index]]
+  g <- pk$github
+  cr <- pk$cran
+  u <- pk$runiverse
+
+  section <- function(heading, ...) {
+    div(class = "col-md-6 col-lg-4 mb-3", h6(class = "text-uppercase text-body-secondary", heading), ...)
+  }
+  chips <- function(x) {
+    if (!length(x)) return(span(class = "text-body-secondary", "None"))
+    tagList(lapply(unlist(x), function(d) badge(d, "info")))
+  }
+  link <- function(href, text) if (!is.null(href)) tags$li(a(href = href, text))
+
+  cran_text <- switch(cr$status,
+    cran = paste0("Version ", cr$version, ", published ", cr$published,
+                  if (!is.null(cr$deadline)) paste0(". Deadline: ", cr$deadline)),
+    archived = cr$comment %||% "Archived",
+    "Not on CRAN"
+  )
+
+  div(class = "container-fluid p-3",
+    div(class = "row",
+      section("About",
+        p(pk$title %||% g$description %||% ""),
+        if (!is.null(pk$maintainer)) p(class = "text-body-secondary", "Maintainer: ", pk$maintainer),
+        if (!is.null(pk$notes)) p(pk$notes)
+      ),
+      section("Status",
+        if (length(pk$issues)) {
+          tags$ul(lapply(pk$issues, function(i) tags$li(i$text)))
+        } else {
+          p(class = "text-body-secondary", "No problems found")
+        }
+      ),
+      section("CRAN",
+        p(cran_text),
+        if (!is.null(cr$first_release)) p(class = "text-body-secondary", "First released ", cr$first_release)
+      ),
+      section("Last commit",
+        p(if (!is.null(g$last_commit)) paste0(substr(g$last_commit, 1, 10), " (", g$default_branch, ")") else "Unknown"),
+        if (!is.null(g$last_commit_message)) p(class = "text-body-secondary", g$last_commit_message)
+      ),
+      section("Uses ICES packages", chips(pk$ices_dependencies)),
+      section("Used by ICES packages", chips(pk$ices_reverse_dependencies)),
+      section("Links",
+        tags$ul(
+          link(g$url, "GitHub repository"),
+          link(cr$url, "CRAN page"),
+          link(cr$checks$url, "CRAN check results"),
+          link(u$url, "r-universe page"),
+          link(u$build_url, "r-universe build log"),
+          link(g$homepage, "Website")
+        )
+      )
+    )
+  )
+}
+
+reactable(
+  tab[c("package", "health", "github_version", "cran_status", "cran_checks",
+        "universe_checks", "open_issues", "open_prs", "last_commit")],
+  details = package_details,
+  onClick = "expand",
+  searchable = TRUE,
+  filterable = TRUE,
+  pagination = FALSE,
+  highlight = TRUE,
+  defaultSorted = "package",
+  rowStyle = list(cursor = "pointer"),
+  columns = list(
+    package = colDef(name = "Package", minWidth = 260, cell = function(value, index) {
+      div(div(class = "fw-semibold", value), div(class = "small text-body-secondary", tab$title[index]))
+    }),
+    health = colDef(name = "Status", minWidth = 140, cell = function(value) health_badge(value)),
+    github_version = colDef(name = "GitHub", minWidth = 100),
+    cran_status = colDef(name = "CRAN", minWidth = 110, cell = function(value, index) {
+      cran_badge(value, tab$cran_version[index], tab$cran_url[index], pkgs[[index]]$cran$comment)
+    }),
+    cran_checks = colDef(name = "CRAN checks", minWidth = 110, cell = function(value, index) {
+      check_badge(value, tab$cran_checks_url[index])
+    }),
+    universe_checks = colDef(name = "r-universe", minWidth = 110, cell = function(value, index) {
+      universe_badge(tab$universe_build[index], value, tab$universe_url[index])
+    }),
+    open_issues = colDef(name = "Issues", minWidth = 70, align = "right", cell = function(value, index) {
+      if (is.na(value) || value == 0) value else a(href = paste0(tab$github_url[index], "/issues"), value)
+    }),
+    open_prs = colDef(name = "PRs", minWidth = 60, align = "right", cell = function(value, index) {
+      if (is.na(value) || value == 0) value else a(href = paste0(tab$github_url[index], "/pulls"), value)
+    }),
+    last_commit = colDef(name = "Last commit", minWidth = 110, format = colFormat(date = TRUE))
+  ),
+  theme = reactableTheme(
+    backgroundColor = "transparent",
+    color = "inherit",
+    borderColor = "var(--bs-border-color)",
+    highlightColor = "var(--bs-tertiary-bg)",
+    inputStyle = list(backgroundColor = "var(--bs-body-bg)", color = "var(--bs-body-color)")
+  )
+)
+```

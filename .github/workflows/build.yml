@@ -1,5 +1,6 @@
-# Collect the package status and publish the site to GitHub Pages.
-# Runs every day, when packages.json or the site changes, and by hand from
+# Render the Quarto site and publish it to GitHub Pages. Rendering runs
+# scripts/build_status.R first (pre-render in _quarto.yml) to collect the
+# package status. Runs every day, on every push to main, and by hand from
 # the Actions tab.
 
 name: Build status page
@@ -31,10 +32,12 @@ jobs:
           use-public-rspm: true
 
       - name: Install R packages
-        run: Rscript -e 'install.packages("jsonlite")'
+        run: Rscript -e 'install.packages(c("jsonlite", "knitr", "rmarkdown", "htmltools", "reactable"))'
 
-      - name: Collect package status
-        run: Rscript scripts/build_status.R
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render site
+        run: quarto render
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -42,7 +45,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: site
+          path: _site
 
   deploy:
     needs: build

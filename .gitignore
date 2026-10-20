@@ -1,2 +1,6 @@
-site/status.json
+/_site/
+/.quarto/
+/data/
 .Rhistory
+
+**/*.quarto_ipynb

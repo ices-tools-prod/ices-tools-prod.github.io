@@ -1,17 +1,22 @@
 # Collect the status of the packages listed in packages.json, and write it
-# to site/status.json for the web pages to display.
+# to data/status.json for the pages to display.
 #
-# Run from the repository root:
+# Quarto runs this script before rendering the site (see pre-render in
+# _quarto.yml). It can also be run from the repository root:
 #
 #   Rscript scripts/build_status.R
 #
 # Needs the jsonlite package, and the GitHub CLI (gh), either logged in or
 # with the GH_TOKEN environment variable set (as in the GitHub Action).
+#
+# If data/status.json is less than max_age_hours old, it is not rebuilt,
+# which keeps local previews quick. Set STATUS_REFRESH=true to force a rebuild.
 
 library(jsonlite)
 
 config_file <- "packages.json"
-out_file <- file.path("site", "status.json")
+out_file <- file.path("data", "status.json")
+max_age_hours <- 6
 universes <- c("ices-tools-prod", "ices-tools-dev")
 cran <- "https://cran.r-project.org"
 
@@ -21,6 +26,15 @@ options(repos = c(CRAN = cran))
 
 # order of check results, from best to worst
 check_levels <- c("OK", "NOTE", "WARNING", "ERROR", "FAILURE")
+
+
+if (file.exists(out_file) && !identical(Sys.getenv("STATUS_REFRESH"), "true")) {
+  age <- difftime(Sys.time(), file.mtime(out_file), units = "hours")
+  if (age < max_age_hours) {
+    message("using ", out_file, ", built ", round(age, 1), " hours ago")
+    quit(save = "no")
+  }
+}
 
 
 # helpers ---------------------------------------------------------------------
