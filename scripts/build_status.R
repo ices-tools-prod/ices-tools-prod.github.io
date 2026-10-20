@@ -169,6 +169,10 @@ status <- lapply(pkgs, function(cfg) {
 
   # GitHub
   gh_repo <- gh_api(paste0("repos/", repo))
+  if (isTRUE(gh_repo$private)) {
+    msg("skipping ", pkg, ": ", repo, " is a private repository")
+    return(NULL)
+  }
   desc <- gh_api(paste0("repos/", repo, "/contents/DESCRIPTION"), raw = TRUE)
   d <- if (!is.null(desc)) try_read(read.dcf(textConnection(desc), keep.white = "Authors@R"), paste(pkg, "DESCRIPTION")) else NULL
 
@@ -265,6 +269,7 @@ status <- lapply(pkgs, function(cfg) {
     runiverse = universe
   )
 })
+status <- Filter(Negate(is.null), status)
 names(status) <- vapply(status, `[[`, "", "package")
 
 
