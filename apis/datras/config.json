@@ -1,0 +1,101 @@
+{
+  "id": "datras",
+  "name": "DATRAS trawl surveys",
+  "description": "Survey lists, exchange data (haul, length and age records), CPUE, indices and litter data from the ICES Database of Trawl Surveys (DATRAS).",
+  "base_url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx",
+  "website": "https://datras.ices.dk",
+  "docs": "https://datras.ices.dk/WebServices/Webservices.aspx",
+  "spec": "https://datras.ices.dk/WebServices/DATRASWebService.asmx?WSDL",
+  "packages": [
+    "icesDatras"
+  ],
+  "notes": [
+    {
+      "topic": "Data by species",
+      "observation": "`getHLdataSp` and `getCAdataSp` return an empty result for every species tried (AphiaIDs 126417, 126436, 126437), including species in the unfiltered `getHLdata` result for the same survey, year and quarter.",
+      "affects": "`getHLdata(species = )` and `getCAdata(species = )` return no data."
+    },
+    {
+      "topic": "XML responses",
+      "observation": "Responses are XML in the namespace `ices.dk.local/DATRAS` (`https://ices.dk.local/DATRAS` in some versions). Values are text, and missing values are empty elements. A survey, year and quarter with no data gives an empty list with HTTP 200.",
+      "affects": "icesDatras parses the XML itself, and handles both namespaces."
+    },
+    {
+      "topic": "Size of responses",
+      "observation": "Exchange data and CPUE are returned for a whole survey, year and quarter: `getCPUELength` is 20 to 90 MB, and `getHLdata` up to tens of MB.",
+      "affects": "Downloads can be slow; the download API used by `getDatrasUnaggregated()` returns a zipped CSV instead."
+    },
+    {
+      "topic": "Two services",
+      "observation": "Most data come from the ASMX web service (documented by its WSDL). `getDatrasUnaggregated()` uses the separate download API `Data_products/Download/DATRASDownloadAPI.aspx`, which returns a zip file with a CSV, and has no documentation.",
+      "affects": "Nothing at present."
+    },
+    {
+      "topic": "Documentation",
+      "observation": "The WSDL also lists upload operations (`UploadAndValidateFile`, `SaveDocument`, `ScreenResult`), which are not called by this check.",
+      "affects": "Nothing at present."
+    }
+  ],
+  "endpoints": [
+    {
+      "name": "getSurveyList",
+      "path": "getSurveyList"
+    },
+    {
+      "name": "getSurveyYearList",
+      "path": "getSurveyYearList?survey=NIGFS"
+    },
+    {
+      "name": "getSurveyYearQuarterList",
+      "path": "getSurveyYearQuarterList?survey=NIGFS&year=2020"
+    },
+    {
+      "name": "getHHdata",
+      "path": "getHHdata?survey=NIGFS&year=2020&quarter=1"
+    },
+    {
+      "name": "getHLdata",
+      "path": "getHLdata?survey=SCOROC&year=2020&quarter=3"
+    },
+    {
+      "name": "getHLdataSp",
+      "path": "getHLdataSp?survey=NIGFS&year=2020&quarter=1&species=126417"
+    },
+    {
+      "name": "getCAdata",
+      "path": "getCAdata?survey=SCOROC&year=2020&quarter=3"
+    },
+    {
+      "name": "getCAdataSp",
+      "path": "getCAdataSp?survey=NIGFS&year=2020&quarter=1&species=126417"
+    },
+    {
+      "name": "getCPUEAge",
+      "path": "getCPUEAge?survey=BITS&year=2020&quarter=1"
+    },
+    {
+      "name": "getCPUELength",
+      "path": "getCPUELength?survey=BITS&year=2001&quarter=1"
+    },
+    {
+      "name": "getIndices",
+      "path": "getIndices?survey=NS-IBTS&year=2020&quarter=1&species=126436"
+    },
+    {
+      "name": "getFlexFile",
+      "path": "getFlexFile?survey=NIGFS&year=2020&quarter=1"
+    },
+    {
+      "name": "getLitterAssessmentOutput",
+      "path": "getLitterAssessmentOutput?survey=NS-IBTS&year=2020&quarter=1"
+    },
+    {
+      "name": "getDatrasFieldList",
+      "path": "getDatrasFieldList"
+    },
+    {
+      "name": "Download API (HH)",
+      "url": "https://datras.ices.dk/Data_products/Download/DATRASDownloadAPI.aspx?recordtype=HH&survey=NIGFS&year=2020&quarter=1"
+    }
+  ]
+}

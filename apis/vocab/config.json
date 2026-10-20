@@ -6,7 +6,9 @@
   "website": "https://vocab.ices.dk",
   "docs": "https://vocab.ices.dk/services/api/swagger/index.html",
   "spec": "https://vocab.ices.dk/services/api/swagger/v1/swagger.json",
-  "packages": ["icesVocab"],
+  "packages": [
+    "icesVocab"
+  ],
   "notes": [
     {
       "topic": "Unknown code types and codes",
@@ -32,38 +34,31 @@
   "endpoints": [
     {
       "name": "Code",
-      "path": "Code/Gear",
-      "functions": ["getCodeList", "findCode"]
+      "path": "Code/Gear"
     },
     {
       "name": "Code, by code",
-      "path": "Code/SpecWoRMS?code=126436",
-      "functions": ["getCodeList"]
+      "path": "Code/SpecWoRMS?code=126436"
     },
     {
       "name": "Code, modified since",
-      "path": "Code/Gear?modified=2025-01-01",
-      "functions": ["getCodeList"]
+      "path": "Code/Gear?modified=2025-01-01"
     },
     {
       "name": "CodeType",
-      "path": "CodeType",
-      "functions": ["getCodeTypeList", "findCodeType", "findCode"]
+      "path": "CodeType"
     },
     {
       "name": "CodeType, by code type",
-      "path": "CodeType?codeType=Gear",
-      "functions": ["getCodeTypeList"]
+      "path": "CodeType?codeType=Gear"
     },
     {
       "name": "CodeDetail",
-      "path": "CodeDetail/SpecWoRMS/101170",
-      "functions": ["getCodeDetail"]
+      "path": "CodeDetail/SpecWoRMS/101170"
     },
     {
       "name": "CodeType Relation",
-      "path": "CodeType/Relation/Pargroup/PARAM",
-      "functions": ["getCodeTypeRelation"]
+      "path": "CodeType/Relation/Pargroup/PARAM"
     }
   ]
 }

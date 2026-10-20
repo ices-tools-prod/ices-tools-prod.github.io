@@ -6,7 +6,9 @@
   "website": "https://sag.ices.dk",
   "docs": "https://sag.ices.dk/sag_api/docs/swagger/index.html",
   "spec": "https://sag.ices.dk/sag_api/docs/swagger/v2/swagger.json",
-  "packages": ["icesSAG"],
+  "packages": [
+    "icesSAG"
+  ],
   "notes": [
     {
       "topic": "Filtering StockList by stock",
@@ -47,53 +49,43 @@
   "endpoints": [
     {
       "name": "StockList",
-      "path": "StockList?year=2024",
-      "functions": ["getListStocks", "findAssessmentKey"]
+      "path": "StockList?year=2024"
     },
     {
       "name": "StockList, by stock",
-      "path": "StockList?year=2024&fishStock=ple.27.420",
-      "functions": ["getListStocks"]
+      "path": "StockList?year=2024&fishStock=ple.27.420"
     },
     {
       "name": "LatestStockAdviceList",
-      "path": "LatestStockAdviceList",
-      "functions": ["getLatestStockAdviceList"]
+      "path": "LatestStockAdviceList"
     },
     {
       "name": "SummaryTable",
-      "path": "SummaryTable?assessmentKey=18688",
-      "functions": ["getSummaryTable", "getSAG"]
+      "path": "SummaryTable?assessmentKey=18688"
     },
     {
       "name": "StockStatusValues",
-      "path": "StockStatusValues?assessmentKey=18688",
-      "functions": ["getStockStatusValues"]
+      "path": "StockStatusValues?assessmentKey=18688"
     },
     {
       "name": "FishStockReferencePoints",
-      "path": "FishStockReferencePoints?assessmentKey=18688",
-      "functions": ["getFishStockReferencePoints"]
+      "path": "FishStockReferencePoints?assessmentKey=18688"
     },
     {
       "name": "StockDownload",
-      "path": "StockDownload?assessmentKey=18688",
-      "functions": ["getStockDownloadData"]
+      "path": "StockDownload?assessmentKey=18688"
     },
     {
       "name": "StockSettings",
-      "path": "StockSettings?assessmentKey=18688",
-      "functions": ["getSAGSettingsForAStock"]
+      "path": "StockSettings?assessmentKey=18688"
     },
     {
       "name": "SAGTypeCharts",
-      "path": "SAGTypeCharts",
-      "functions": ["getSAGTypeGraphs"]
+      "path": "SAGTypeCharts"
     },
     {
       "name": "SettingsForChartType",
-      "path": "SettingsForChartType?SAGChartKey=1",
-      "functions": ["getSAGTypeSettings"]
+      "path": "SettingsForChartType?SAGChartKey=1"
     }
   ]
 }

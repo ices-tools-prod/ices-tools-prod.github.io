@@ -1,0 +1,774 @@
+{
+  "recorded": "2026-10-20T22:22:40Z",
+  "endpoints": [
+    {
+      "name": "getSurveyList",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getSurveyList",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_SurveyList": ["element"],
+        "ArrayOfCls_Datras_SurveyList/Cls_Datras_SurveyList": ["element"],
+        "ArrayOfCls_Datras_SurveyList/Cls_Datras_SurveyList/Survey": ["string"]
+      }
+    },
+    {
+      "name": "getSurveyYearList",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getSurveyYearList?survey=NIGFS",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_SurveyYearList": ["element"],
+        "ArrayOfCls_Datras_SurveyYearList/Cls_Datras_SurveyYearList": ["element"],
+        "ArrayOfCls_Datras_SurveyYearList/Cls_Datras_SurveyYearList/Survey": ["string"],
+        "ArrayOfCls_Datras_SurveyYearList/Cls_Datras_SurveyYearList/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getSurveyYearQuarterList",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getSurveyYearQuarterList?survey=NIGFS&year=2020",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_SurveyYearQuarterList": ["element"],
+        "ArrayOfCls_Datras_SurveyYearQuarterList/Cls_Datras_SurveyYearQuarterList": ["element"],
+        "ArrayOfCls_Datras_SurveyYearQuarterList/Cls_Datras_SurveyYearQuarterList/Quarter": ["string (number)"],
+        "ArrayOfCls_Datras_SurveyYearQuarterList/Cls_Datras_SurveyYearQuarterList/Survey": ["string"],
+        "ArrayOfCls_Datras_SurveyYearQuarterList/Cls_Datras_SurveyYearQuarterList/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getHHdata",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getHHdata?survey=NIGFS&year=2020&quarter=1",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_HH": ["element"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH": ["element"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/BotCurDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/BotCurSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/BotSal": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/BotTemp": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Buoyancy": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/BySpecRecCode": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/CodendMesh": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Country": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DataType": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Day": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DayNight": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Depth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DepthStratum": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Distance": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DoorSpread": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DoorSurface": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DoorType": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/DoorWgt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Gear": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/GearEx": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/GroundSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HaulDur": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HaulLat": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HaulLong": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HaulNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HaulVal": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/HydroStNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/KiteDim": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/MaxTrawlDepth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/MinTrawlDepth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Month": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Netopening": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/PelSampType": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Quarter": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/RecordType": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Rigging": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SecchiDepth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Ship": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/ShootLat": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/ShootLong": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SpeedWater": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/StatRec": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/StdSpecRecCode": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/StNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SurCurDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SurCurSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SurSal": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SurTemp": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Survey": ["string"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SweepLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SwellDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/SwellHeight": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/ThClineDepth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/ThermoCline": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Tickler": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/TidePhase": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/TideSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/TimeShot": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/TowDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Turbidity": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/WarpDen": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Warpdia": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Warplngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/WgtGroundRope": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/WindDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/WindSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/WingSpread": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HH/Cls_DatrasExchange_HH/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getHLdata",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getHLdata?survey=SCOROC&year=2020&quarter=3",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_HL": ["element"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL": ["element"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/CatCatchWgt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/CatIdentifier": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Country": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/DevStage": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/DoorType": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Gear": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/GearEx": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/HaulNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/HLNoAtLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/LenMeasType": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/LngtClass": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/LngtCode": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/NoMeas": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Quarter": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/RecordType": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Sex": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Ship": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SpecCode": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SpecCodeType": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SpecVal": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/StNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SubFactor": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SubWgt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Survey": ["string"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/SweepLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/TotalNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Valid_Aphia": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_HL/Cls_DatrasExchange_HL/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getHLdataSp",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getHLdataSp?survey=NIGFS&year=2020&quarter=1&species=126417",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_HL": ["string (empty)"]
+      }
+    },
+    {
+      "name": "getCAdata",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getCAdata?survey=SCOROC&year=2020&quarter=3",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_CA": ["element"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA": ["element"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Age": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/AgePrepMet": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/AgeSource": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/AreaCode": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/AreaType": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/CANoAtLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Country": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/DoorType": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/FishID": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Gear": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/GearEx": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/GenSamp": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/HaulNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/IndWgt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/LngtClass": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/LngtCode": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Maturity": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/MaturityScale": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/OtGrading": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/ParSamp": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/PlusGr": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Quarter": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/RecordType": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Sex": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Ship": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/SpecCode": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/SpecCodeType": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/StNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/StomSamp": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Survey": ["string"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/SweepLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Valid_Aphia": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_CA/Cls_DatrasExchange_CA/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getCAdataSp",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getCAdataSp?survey=NIGFS&year=2020&quarter=1&species=126417",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_CA": ["string (empty)"]
+      }
+    },
+    {
+      "name": "getCPUEAge",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getCPUEAge?survey=BITS&year=2020&quarter=1",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_CPUE_Age": ["element"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age": ["element"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_0": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_1": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_10": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_11": ["null"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_11/@nil": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_12": ["null"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_12/@nil": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_13": ["null"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_13/@nil": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_14": ["null"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_14/@nil": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_15": ["null"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_15/@nil": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_2": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_3": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_4": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_5": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_6": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_7": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_8": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Age_9": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/AphiaID": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Area": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Cal_DateID": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/DateTime": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/DayNight": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Depth": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Gear": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/HaulNo": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Quarter": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Sex": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Ship": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/ShootLat": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/ShootLon": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Species": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/SubArea": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Survey": ["string"],
+        "ArrayOfCls_Datras_CPUE_Age/Cls_Datras_CPUE_Age/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getCPUELength",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getCPUELength?survey=BITS&year=2001&quarter=1",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_CPUE_Length": ["element"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length": ["element"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/AphiaID": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Area": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Cal_DateID": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/CPUE_number_per_hour": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/DateTime": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/DayNight": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Depth": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Gear": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/HaulDur": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/HaulNo": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/LngtClas": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Quarter": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Sex": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Ship": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/ShootLat": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/ShootLon": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Species": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/SubArea": ["string (number)"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Survey": ["string"],
+        "ArrayOfCls_Datras_CPUE_Length/Cls_Datras_CPUE_Length/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getIndices",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getIndices?survey=NS-IBTS&year=2020&quarter=1&species=126436",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_Indices": ["element"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices": ["element"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_0": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_1": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_10": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_10/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_11": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_11/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_12": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_12/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_13": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_13/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_14": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_14/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_15": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_15/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_2": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_3": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_4": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_5": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_6": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_7": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_7/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_8": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_8/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_9": ["null"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Age_9/@nil": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/AphiaID": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/IndexArea": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/PlusGr": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Quarter": ["string (number)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Sex": ["string (empty)"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Species": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Survey": ["string"],
+        "ArrayOfCls_Datras_Indices/Cls_Datras_Indices/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getFlexFile",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getFlexFile?survey=NIGFS&year=2020&quarter=1",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_FlexFile": ["element"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile": ["element"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Cal_Distance": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Cal_DoorSpread": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Cal_WingSpread": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Country": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DataType": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Day": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DayNight": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Depth": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DepthStratum": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Distance": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DistanceFlag": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DoorSpread": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/DSflag": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Gear": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/HaulDur": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/HaulNo": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/HaulVal": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/ICESArea": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Month": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Quarter": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/RecordType": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Ship": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/ShootLat": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/ShootLong": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/StatRec": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Survey": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/SweepLngt": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/SweptAreaBWKM2": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/SweptAreaDSKM2": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/SweptAreaWSKM2": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/TimeShot": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Warplngt": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/WingSpread": ["string (number)"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/WSflag": ["string"],
+        "ArrayOfCls_Datras_FlexFile/Cls_Datras_FlexFile/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getLitterAssessmentOutput",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getLitterAssessmentOutput?survey=NS-IBTS&year=2020&quarter=1",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput": ["element"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput": ["element"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/BottomDepth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/CodendMesh": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/CodendMesh/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Country": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DataType": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DateofCalculation": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Day": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Depth": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Distance": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Distance/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorSpread": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorSurface": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorSurface/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorType": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorWgt": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/DoorWgt/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/EEZ": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Gear": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/GearEx": ["string", "string (empty)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/GroundSpeed": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulDur": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulLat": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulLat/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulLong": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulLong/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulNo": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/HaulVal": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LT_Items": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LT_Weight": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LTPRP": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LTREF": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LTSRC": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/LTSZC": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Month": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/MSFDArea": ["string", "string (empty)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Netopening": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Netopening/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/NMArea": ["string", "string (empty)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/OSPARArea": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/PARAM": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Quarter": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Rigging": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Ship": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/ShootLat": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/ShootLong": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SpeedWater": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SpeedWater/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/StatRec": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/StNo": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Survey": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SweepLngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SwellDir": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SwellDir/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SwellHeight": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/SwellHeight/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Tickler": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Tickler/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/TimeShot": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/TowDir": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/TYPPL": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/UnitItem": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/UnitWgt": ["string", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WarpDen": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WarpDen/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Warpdia": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Warpdia/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Warplngt": ["string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WindDir": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WindDir/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WindSpeed": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WindSpeed/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WingSpread": ["null", "string (number)"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/WingSpread/@nil": ["string"],
+        "ArrayOfCls_DatrasExchange_LitterAssessmentOutput/Cls_DatrasExchange_LitterAssessmentOutput/Year": ["string (number)"]
+      }
+    },
+    {
+      "name": "getDatrasFieldList",
+      "url": "https://datras.ices.dk/WebServices/DATRASWebService.asmx/getDatrasFieldList",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "fields": {
+        "ArrayOfCls_Datras_FieldList": ["element"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList": ["element"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList/DataFormat": ["string"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList/Description": ["string", "string (empty)"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList/FieldName": ["string"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList/FieldNameOld": ["string"],
+        "ArrayOfCls_Datras_FieldList/Cls_Datras_FieldList/RecordHeader": ["string"]
+      }
+    },
+    {
+      "name": "Download API (HH)",
+      "url": "https://datras.ices.dk/Data_products/Download/DATRASDownloadAPI.aspx?recordtype=HH&survey=NIGFS&year=2020&quarter=1",
+      "http_status": 200,
+      "content_type": "application/zip",
+      "fields": {
+        "(root)": ["zip"],
+        "DATRASDataTable.csv": ["file"],
+        "DATRASDataTable.csv/BottomCurrentDirection": ["string (number)"],
+        "DATRASDataTable.csv/BottomCurrentSpeed": ["string (number)"],
+        "DATRASDataTable.csv/BottomDepth": ["string (number)"],
+        "DATRASDataTable.csv/BottomSalinity": ["string (number)"],
+        "DATRASDataTable.csv/BottomTemperature": ["string (number)"],
+        "DATRASDataTable.csv/Buoyancy": ["string (number)"],
+        "DATRASDataTable.csv/BycatchSpeciesCode": ["string (number)"],
+        "DATRASDataTable.csv/CodendMesh": ["string (number)"],
+        "DATRASDataTable.csv/Country": ["string"],
+        "DATRASDataTable.csv/DataType": ["string"],
+        "DATRASDataTable.csv/DateofCalculation": ["string (empty)"],
+        "DATRASDataTable.csv/Day": ["string (number)"],
+        "DATRASDataTable.csv/DayNight": ["string"],
+        "DATRASDataTable.csv/DepthStratum": ["string (number)"],
+        "DATRASDataTable.csv/Distance": ["string (number)"],
+        "DATRASDataTable.csv/DoorSpread": ["string (number)"],
+        "DATRASDataTable.csv/DoorSurface": ["string (number)"],
+        "DATRASDataTable.csv/DoorType": ["string (number)"],
+        "DATRASDataTable.csv/DoorWeight": ["string (number)"],
+        "DATRASDataTable.csv/EDOM": ["string (number)"],
+        "DATRASDataTable.csv/Gear": ["string"],
+        "DATRASDataTable.csv/GearExceptions": ["string (number)"],
+        "DATRASDataTable.csv/GroundRopeWeight": ["string (number)"],
+        "DATRASDataTable.csv/HaulDuration": ["string (number)"],
+        "DATRASDataTable.csv/HaulLatitude": ["string (number)"],
+        "DATRASDataTable.csv/HaulLongitude": ["string (number)"],
+        "DATRASDataTable.csv/HaulNumber": ["string (number)"],
+        "DATRASDataTable.csv/HaulValidity": ["string"],
+        "DATRASDataTable.csv/HydrographicStationID": ["string (number)"],
+        "DATRASDataTable.csv/KiteArea": ["string (number)"],
+        "DATRASDataTable.csv/MaxTrawlDepth": ["string (number)"],
+        "DATRASDataTable.csv/MinTrawlDepth": ["string (number)"],
+        "DATRASDataTable.csv/Month": ["string (number)"],
+        "DATRASDataTable.csv/NetOpening": ["string (number)"],
+        "DATRASDataTable.csv/PelagicSamplingType": ["string (number)"],
+        "DATRASDataTable.csv/Platform": ["string"],
+        "DATRASDataTable.csv/Quarter": ["string (number)"],
+        "DATRASDataTable.csv/ReasonHaulDisruption": ["string (empty)"],
+        "DATRASDataTable.csv/RecordHeader": ["string"],
+        "DATRASDataTable.csv/Rigging": ["string (number)"],
+        "DATRASDataTable.csv/SecchiDepth": ["string (number)"],
+        "DATRASDataTable.csv/ShootLatitude": ["string (number)"],
+        "DATRASDataTable.csv/ShootLongitude": ["string (number)"],
+        "DATRASDataTable.csv/SpeedGround": ["string (number)"],
+        "DATRASDataTable.csv/SpeedWater": ["string (number)"],
+        "DATRASDataTable.csv/StandardSpeciesCode": ["string (number)"],
+        "DATRASDataTable.csv/StartTime": ["string (number)"],
+        "DATRASDataTable.csv/StationName": ["string (number)"],
+        "DATRASDataTable.csv/StatisticalRectangle": ["string (number)"],
+        "DATRASDataTable.csv/SurfaceCurrentDirection": ["string (number)"],
+        "DATRASDataTable.csv/SurfaceCurrentSpeed": ["string (number)"],
+        "DATRASDataTable.csv/SurfaceSalinity": ["string (number)"],
+        "DATRASDataTable.csv/SurfaceTemperature": ["string (number)"],
+        "DATRASDataTable.csv/Survey": ["string"],
+        "DATRASDataTable.csv/SurveyIndexArea": ["string (number)"],
+        "DATRASDataTable.csv/SweepLength": ["string (number)"],
+        "DATRASDataTable.csv/SwellDirection": ["string (number)"],
+        "DATRASDataTable.csv/SwellHeight": ["string (number)"],
+        "DATRASDataTable.csv/ThermoCline": ["string (number)"],
+        "DATRASDataTable.csv/ThermoClineDepth": ["string (number)"],
+        "DATRASDataTable.csv/Tickler": ["string (number)"],
+        "DATRASDataTable.csv/TidePhase": ["string (number)"],
+        "DATRASDataTable.csv/TideSpeed": ["string (number)"],
+        "DATRASDataTable.csv/TowDirection": ["string (number)"],
+        "DATRASDataTable.csv/Turbidity": ["string (number)"],
+        "DATRASDataTable.csv/WarpDensity": ["string (number)"],
+        "DATRASDataTable.csv/WarpDiameter": ["string (number)"],
+        "DATRASDataTable.csv/WarpLength": ["string (number)"],
+        "DATRASDataTable.csv/WindDirection": ["string (number)"],
+        "DATRASDataTable.csv/WindSpeed": ["string (number)"],
+        "DATRASDataTable.csv/WingSpread": ["string (number)"],
+        "DATRASDataTable.csv/Year": ["string (number)"]
+      }
+    }
+  ],
+  "spec": {
+    "GET /getHLdata": {
+      "method": "GET",
+      "path": "/getHLdata",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getHLdataNewHeaders": {
+      "method": "GET",
+      "path": "/getHLdataNewHeaders",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getCAdata": {
+      "method": "GET",
+      "path": "/getCAdata",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getHLdataSp": {
+      "method": "GET",
+      "path": "/getHLdataSp",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string",
+        "species": "query, string"
+      }
+    },
+    "GET /getCAdataSp": {
+      "method": "GET",
+      "path": "/getCAdataSp",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string",
+        "species": "query, string"
+      }
+    },
+    "GET /getHHdata": {
+      "method": "GET",
+      "path": "/getHHdata",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getSurveyInsertDate": {
+      "method": "GET",
+      "path": "/getSurveyInsertDate",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string",
+        "ship": "query, string",
+        "country": "query, string"
+      }
+    },
+    "GET /getSurveyList": {
+      "method": "GET",
+      "path": "/getSurveyList",
+      "parameters": []
+    },
+    "GET /getSurveyYearList": {
+      "method": "GET",
+      "path": "/getSurveyYearList",
+      "parameters": {
+        "survey": "query, string"
+      }
+    },
+    "GET /getSurveyYearQuarterList": {
+      "method": "GET",
+      "path": "/getSurveyYearQuarterList",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string"
+      }
+    },
+    "GET /getIndices": {
+      "method": "GET",
+      "path": "/getIndices",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string",
+        "species": "query, string"
+      }
+    },
+    "GET /SaveDocument": {
+      "method": "GET",
+      "path": "/SaveDocument",
+      "parameters": {
+        "docbinaryarray": "query, StringArray",
+        "docname": "query, string"
+      }
+    },
+    "GET /getSpecies": {
+      "method": "GET",
+      "path": "/getSpecies",
+      "parameters": {
+        "codename": "query, string",
+        "code": "query, string"
+      }
+    },
+    "GET /getLengthAgeSummary": {
+      "method": "GET",
+      "path": "/getLengthAgeSummary",
+      "parameters": {
+        "country": "query, string",
+        "year": "query, string"
+      }
+    },
+    "GET /getLitterAssessmentOutput": {
+      "method": "GET",
+      "path": "/getLitterAssessmentOutput",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getLitterAssessmentOutputByUpdateDate": {
+      "method": "GET",
+      "path": "/getLitterAssessmentOutputByUpdateDate",
+      "parameters": {
+        "dateofcalculation": "query, string"
+      }
+    },
+    "GET /getListofDateofCalculation": {
+      "method": "GET",
+      "path": "/getListofDateofCalculation",
+      "parameters": []
+    },
+    "GET /getCPUEAge": {
+      "method": "GET",
+      "path": "/getCPUEAge",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getCPUELength": {
+      "method": "GET",
+      "path": "/getCPUELength",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getFlexFile": {
+      "method": "GET",
+      "path": "/getFlexFile",
+      "parameters": {
+        "survey": "query, string",
+        "year": "query, string",
+        "quarter": "query, string"
+      }
+    },
+    "GET /getSubmissionStatus_FishTrawlData": {
+      "method": "GET",
+      "path": "/getSubmissionStatus_FishTrawlData",
+      "parameters": []
+    },
+    "GET /getSubmissionStatus_LitterData": {
+      "method": "GET",
+      "path": "/getSubmissionStatus_LitterData",
+      "parameters": []
+    },
+    "GET /UploadAndValidateFile": {
+      "method": "GET",
+      "path": "/UploadAndValidateFile",
+      "parameters": {
+        "ScreeningEmail": "query, string",
+        "UploadFileName": "query, string",
+        "FilePath": "query, string"
+      }
+    },
+    "GET /getDatrasFieldList": {
+      "method": "GET",
+      "path": "/getDatrasFieldList",
+      "parameters": []
+    },
+    "GET /ScreenResult": {
+      "method": "GET",
+      "path": "/ScreenResult",
+      "parameters": {
+        "FileID": "query, string",
+        "SurveyCode": "query, string",
+        "Recordheader": "query, string"
+      }
+    }
+  }
+}
