@@ -64,32 +64,29 @@ simple_table(
 
 ## Web services
 
-The HTTP status of the endpoints checked for each [web service](apis.qmd).
+The endpoints checked for each [web service](apis.qmd), by the HTTP
+status of their response.
+
+```{r}
+api_status_plot(apis)
+```
 
 ```{r}
 #| results: asis
-http_counts <- function(eps) {
-  checked <- eps$status != "not checked"
-  code <- eps$http_status
-  c(
-    Endpoints = nrow(eps),
-    `Success (2xx)` = sum(checked & code %in% 200:299),
-    `Client errors (4xx)` = sum(checked & code %in% 400:499),
-    `Server errors (5xx)` = sum(checked & code %in% 500:599),
-    `No response` = sum(checked & is.na(code)),
-    `Not checked` = sum(!checked)
-  )
-}
-counts <- do.call(rbind, lapply(apis$apis, function(a) http_counts(endpoint_table(a))))
+counts <- do.call(rbind, lapply(apis$apis, function(a) count_outcomes(endpoint_table(a))))
+counts <- cbind(Endpoints = rowSums(counts), counts)
 counts <- rbind(counts, colSums(counts))
-simple_table(
+colnames(counts) <- c("Endpoints", endpoint_outcomes[colnames(counts)[-1]])
+cat("<details><summary>Show as a table</summary>\n\n")
+print(simple_table(
   data.frame(
     `Web service` = c(sprintf('<a href="api/%s.html">%s</a>', vapply(apis$apis, `[[`, "", "id"), vapply(apis$apis, `[[`, "", "name")), "<strong>Total</strong>"),
     counts,
     check.names = FALSE
   ),
   align = "lrrrrrr"
-)
+))
+cat("\n\n</details>\n")
 ```
 
 ## Needs attention
