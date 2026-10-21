@@ -10,7 +10,8 @@
 # with the GH_TOKEN environment variable set (as in the GitHub Action).
 #
 # If data/status.json is less than max_age_hours old, it is not rebuilt,
-# which keeps local previews quick. Set STATUS_REFRESH=true to force a rebuild.
+# which keeps local previews quick. Set STATUS_REFRESH=true to force a rebuild,
+# or STATUS_REFRESH=false to use the existing file however old it is.
 
 library(jsonlite)
 
@@ -30,7 +31,9 @@ check_levels <- c("OK", "NOTE", "WARNING", "ERROR", "FAILURE")
 
 if (file.exists(out_file) && !identical(Sys.getenv("STATUS_REFRESH"), "true")) {
   age <- difftime(Sys.time(), file.mtime(out_file), units = "hours")
-  if (age < max_age_hours) {
+  # STATUS_REFRESH=false: use the existing data, however old (as when the
+  # site is rendered with data collected earlier)
+  if (age < max_age_hours || identical(Sys.getenv("STATUS_REFRESH"), "false")) {
     message("using ", out_file, ", built ", round(age, 1), " hours ago")
     quit(save = "no")
   }

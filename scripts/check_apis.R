@@ -27,7 +27,8 @@
 # and commit the baseline.json files in apis/.
 #
 # If data/apis.json is less than max_age_hours old, it is not rebuilt. Set
-# STATUS_REFRESH=true to force a rebuild.
+# STATUS_REFRESH=true to force a rebuild, or STATUS_REFRESH=false to use the
+# existing file however old it is.
 #
 # Needs the jsonlite, curl and xml2 packages.
 
@@ -46,7 +47,9 @@ update_ids <- setdiff(args, "--update-baseline")
 
 if (!update_baseline && file.exists(out_file) && !identical(Sys.getenv("STATUS_REFRESH"), "true")) {
   age <- difftime(Sys.time(), file.mtime(out_file), units = "hours")
-  if (age < max_age_hours) {
+  # STATUS_REFRESH=false: use the existing data, however old (as when the
+  # site is rendered with data collected earlier)
+  if (age < max_age_hours || identical(Sys.getenv("STATUS_REFRESH"), "false")) {
     message("using ", out_file, ", built ", round(age, 1), " hours ago")
     quit(save = "no")
   }

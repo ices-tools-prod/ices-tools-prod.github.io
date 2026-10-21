@@ -98,17 +98,29 @@ Rscript -e 'cat(icesConnect::ices_token())' | gh secret set ICES_TOKEN --repo ic
 | `scripts/api_helpers.R` | functions used by `check_apis.R` |
 | `scripts/make_pages.R` | creates a page per package (`package/`) and per web service (`api/`) from the templates |
 | `_quarto.yml` | site settings: navigation, theme, footer, and the scripts run before rendering |
-| `.github/workflows/build.yml` | renders and publishes the site |
+| `.github/workflows/build.yml` | collects the data when needed, renders and publishes the site |
 
 `data/`, `package/` and `api/` are created when the site is built, and are
 not committed.
 
 ## How it works
 
-A GitHub Action runs every day at 05:00 UTC, on every push to `main`, and on
-demand from the Actions tab. It runs `quarto render`, which first runs the
-three scripts in `scripts/`, then renders the pages. The status collected
-for each package is:
+A GitHub Action (`.github/workflows/build.yml`) runs every day at 05:00
+UTC, on every push to `main`, and on demand from the Actions tab. It has
+two parts:
+
+- **data**: runs `scripts/build_status.R` and `scripts/check_apis.R`, and
+  saves `data/` as an artifact. This runs every day, on pushes that change
+  `packages.json`, `apis/` or those scripts (and `scripts/api_helpers.R`),
+  and on runs from the Actions tab with "refresh data" ticked;
+- **render**: renders the pages with `quarto render` and publishes them,
+  using the data just collected or, if it was not collected, the data saved
+  by the latest run that collected it.
+
+So a push that only changes the pages or how they show the data (the
+`.qmd` files, `R/status.R`, `_quarto.yml`) is published in a minute or two,
+without checking the web services again. The status collected for each
+package is:
 
 - **GitHub**: version in `DESCRIPTION` on the default branch, maintainer,
   open issues and pull requests, last commit;
@@ -134,6 +146,13 @@ force it:
 
 ```sh
 STATUS_REFRESH=true quarto render
+```
+
+To change how the pages look without collecting the data again, however
+old it is:
+
+```sh
+STATUS_REFRESH=false quarto preview
 ```
 
 ## Status levels
