@@ -21,6 +21,12 @@ md("Base url: `", api$base_url, "`",
 md("Checked ", updated(apis), ". ",
    if (!is.null(api$baseline_recorded)) paste0("Responses are compared with the baseline recorded on ", substr(api$baseline_recorded, 1, 10), ".")
    else "There is no baseline yet, so changes can not be detected.")
+errors <- Filter(function(e) !is.null(e$error), api$endpoints)
+if (length(errors)) {
+  md('::: {.callout-important title="', length(errors), ' of ', length(api$endpoints), ' endpoints return errors"}')
+  md_list(vapply(errors, function(e) paste0("[", e$name, "](#", gsub("[^a-z0-9]+", "-", tolower(e$name)), "): ", e$error), ""))
+  md(":::")
+}
 if (!is.null(api$token_expires)) md("Endpoints that need a login are checked with an ICES token that expires on ", substr(api$token_expires, 1, 10), ".")
 ```
 
@@ -158,6 +164,7 @@ for (e in api$endpoints) {
     if (!is.null(e$records)) paste(e$records, "records")
   )
   if (length(info)) md(paste(info, collapse = " · "))
+  if (!is.null(e$error)) md("**Error:** ", e$error)
   if (length(e$fields)) {
     md('::: {.callout-note collapse="true" title="Response structure: ', length(e$fields), ' fields"}')
     md_table(data.frame(

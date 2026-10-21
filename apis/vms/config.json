@@ -60,6 +60,22 @@
       "template": "fisheriesoverviews/sarmap/{ecoregion}"
     },
     {
+      "name": "getSARBy_YearAndMetier4_GeoJSON",
+      "path": "getSARBy_YearAndMetier4_GeoJSON/2022/OTT",
+      "template": "getSARBy_YearAndMetier4_GeoJSON/{year}/{metier4}"
+    },
+    {
+      "name": "getSARBy_YearAndMetier4_Shapefile",
+      "path": "getSARBy_YearAndMetier4_Shapefile/2022/OTT",
+      "template": "getSARBy_YearAndMetier4_Shapefile/{year}/{metier4}"
+    },
+    {
+      "name": "fisheriesoverviews/fishingactivity",
+      "path": "fisheriesoverviews/fishingactivity/Azores",
+      "template": "fisheriesoverviews/fishingactivity/{ecoregion}",
+      "auth": true
+    },
+    {
       "name": "fisheriesoverviews/effortmap",
       "path": "fisheriesoverviews/effortmap/Azores?year=2020",
       "template": "fisheriesoverviews/effortmap/{ecoregion}",

@@ -119,13 +119,19 @@ check_endpoint <- function(api, ep) {
   }
 
   out$http_status <- resp$status_code
-  if (isTRUE(ep$auth) && resp$status_code == 401) {
-    out$error <- "the ICES token was refused (HTTP 401): it may have expired. Update the ICES_TOKEN repository secret"
-    return(out)
-  }
   out$content_type <- if (length(resp$type) && !is.na(resp$type)) sub(";.*$", "", resp$type) else ""
   out$time_s <- round(resp$times[["total"]], 2)
   out$size_bytes <- length(resp$content)
+
+  # an HTTP error status is an error, even if the baseline has it too
+  if (resp$status_code >= 400) {
+    out$error <- if (isTRUE(ep$auth) && resp$status_code == 401) {
+      "the ICES token was refused (HTTP 401): it may have expired. Update the ICES_TOKEN repository secret"
+    } else {
+      paste0("the service returned an error, HTTP ", resp$status_code, if (resp$status_code >= 500) " (server error)")
+    }
+    return(out)
+  }
 
   described <- tryCatch(describe_response(resp$content, out$content_type), error = function(e) e)
   if (inherits(described, "error")) {
@@ -226,14 +232,16 @@ results <- lapply(seq_along(configs), function(i) {
   # baseline
   baseline_file <- file.path(dirname(config_files[i]), "baseline.json")
   if (update_baseline && (!length(update_ids) || api$id %in% update_ids)) {
-    # endpoints that were not checked keep the structure recorded before
+    # endpoints that were not checked, or returned an error, keep the
+    # structure recorded before
     old <- if (file.exists(baseline_file)) fromJSON(baseline_file, simplifyVector = FALSE)$endpoints else list()
     old <- setNames(old, vapply(old, `[[`, "", "name"))
     baseline <- list(
       recorded = now(),
       endpoints = Filter(Negate(is.null), lapply(endpoints, function(e) {
-        if (!is.null(e$skipped)) {
-          msg(api$id, ": ", e$name, " not checked, ", if (is.null(old[[e$name]])) "not in the baseline" else "keeping its baseline")
+        if (!is.null(e$skipped) || !is.null(e$error)) {
+          msg(api$id, ": ", e$name, if (is.null(e$error)) " not checked, " else " returned an error, ",
+              if (is.null(old[[e$name]])) "not in the baseline" else "keeping its baseline")
           return(old[[e$name]])
         }
         e <- e[c("name", "url", "http_status", "content_type", "fields")]
