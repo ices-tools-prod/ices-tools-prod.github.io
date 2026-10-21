@@ -1,5 +1,5 @@
 {
-  "recorded": "2026-10-21T09:39:10Z",
+  "recorded": "2026-10-21T11:11:52Z",
   "endpoints": [
     {
       "name": "gearwidths",
@@ -109,6 +109,18 @@
         "[].subsurface_sar": ["number"],
         "[].surface_sar": ["number"],
         "[].wkt": ["string"]
+      }
+    },
+    {
+      "name": "getSARBy_YearAndMetier4_Shapefile",
+      "url": "https://data.ices.dk/vms/api/getSARBy_YearAndMetier4_Shapefile/2022/OTT",
+      "http_status": 200,
+      "content_type": "application/zip",
+      "fields": {
+        "(root)": ["zip"],
+        "VMS_FishingHours_Year_#_Methier#_OTT.dbf": ["file"],
+        "VMS_FishingHours_Year_#_Methier#_OTT.shp": ["file"],
+        "VMS_FishingHours_Year_#_Methier#_OTT.shx": ["file"]
       }
     },
     {
