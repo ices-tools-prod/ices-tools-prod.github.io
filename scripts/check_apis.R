@@ -104,6 +104,11 @@ check_endpoint <- function(api, ep) {
       out$skipped <- "needs an ICES login: set ICES_TOKEN, or log in with icesConnect"
       return(out)
     }
+    expires <- token_expiry(ices_token())
+    if (!is.null(expires) && expires < now()) {
+      out$error <- paste0("the ICES token expired on ", substr(expires, 1, 10), ". Update the ICES_TOKEN repository secret")
+      return(out)
+    }
     headers[["Authorization"]] <- paste("Bearer", ices_token())
   }
   if (length(headers)) do.call(curl::handle_setheaders, c(list(handle), headers))

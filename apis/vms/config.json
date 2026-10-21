@@ -9,8 +9,8 @@
   "notes": [
     {
       "topic": "Login",
-      "observation": "Most endpoints need an ICES token (HTTP 401 without one): VMS and logbook data, effort and landings summaries, the effort map, the passive gear footprint and the WGFBIT datasets. `gearwidths`, `MetierLookup`, `csquares`, `vmssummary` and the SAR map are open.",
-      "affects": "These endpoints are checked only when a token is available (the `ICES_TOKEN` environment variable, or the token stored by icesConnect); otherwise they are shown as not checked. icesVMS sends a token for `vmssummary` and the SAR map too, although they do not need one."
+      "observation": "Most endpoints need an ICES token: VMS and logbook data, effort and landings summaries, the effort map, the passive gear footprint, and WGFBIT datasets 1 and 2. Without a valid token they return HTTP 401, except `GetLogbookData`, which returns 400. `gearwidths`, `MetierLookup`, `csquares`, `vmssummary` and the SAR map are open, and so is `wgfbit/dataset3`, although datasets 1 and 2 are not.",
+      "affects": "These endpoints are checked only when a token is available (the `ICES_TOKEN` environment variable, or the token stored by icesConnect); otherwise they are shown as not checked. icesVMS sends a token for `vmssummary`, the SAR map and `wgfbit/dataset3` too, although they do not need one."
     },
     {
       "topic": "Documentation",
