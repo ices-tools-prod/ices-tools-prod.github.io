@@ -62,6 +62,36 @@ simple_table(
 )
 ```
 
+## Web services
+
+The HTTP status of the endpoints checked for each [web service](apis.qmd).
+
+```{r}
+#| results: asis
+http_counts <- function(eps) {
+  checked <- eps$status != "not checked"
+  code <- eps$http_status
+  c(
+    Endpoints = nrow(eps),
+    `Success (2xx)` = sum(checked & code %in% 200:299),
+    `Client errors (4xx)` = sum(checked & code %in% 400:499),
+    `Server errors (5xx)` = sum(checked & code %in% 500:599),
+    `No response` = sum(checked & is.na(code)),
+    `Not checked` = sum(!checked)
+  )
+}
+counts <- do.call(rbind, lapply(apis$apis, function(a) http_counts(endpoint_table(a))))
+counts <- rbind(counts, colSums(counts))
+simple_table(
+  data.frame(
+    `Web service` = c(sprintf('<a href="api/%s.html">%s</a>', vapply(apis$apis, `[[`, "", "id"), vapply(apis$apis, `[[`, "", "name")), "<strong>Total</strong>"),
+    counts,
+    check.names = FALSE
+  ),
+  align = "lrrrrrr"
+)
+```
+
 ## Needs attention
 
 ```{r}
