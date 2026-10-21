@@ -55,6 +55,29 @@ if (!update_baseline && file.exists(out_file) && !identical(Sys.getenv("STATUS_R
 msg <- function(...) message(format(Sys.time(), "%H:%M:%S "), ...)
 now <- function() format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 
+# an ICES token, for endpoints that need a login: the ICES_TOKEN environment
+# variable, or else the token stored by icesConnect. "" if there is none.
+ices_token <- local({
+  token <- NULL
+  function() {
+    if (is.null(token)) {
+      token <<- Sys.getenv("ICES_TOKEN")
+      if (!nzchar(token) && requireNamespace("icesConnect", quietly = TRUE)) {
+        token <<- tryCatch(suppressWarnings(icesConnect::ices_token()), error = function(e) "")
+      }
+    }
+    token
+  }
+})
+
+# when an ICES token expires, from its payload (a JSON web token)
+token_expiry <- function(token) {
+  part <- chartr("-_", "+/", strsplit(token, ".", fixed = TRUE)[[1]][2])
+  part <- paste0(part, strrep("=", (4 - nchar(part) %% 4) %% 4))
+  exp <- tryCatch(fromJSON(rawToChar(base64_dec(part)))$exp, error = function(e) NULL)
+  if (is.numeric(exp)) format(as.POSIXct(exp, origin = "1970-01-01", tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+}
+
 
 # checking an endpoint -------------------------------------------------------------
 
@@ -68,10 +91,22 @@ check_endpoint <- function(api, ep) {
   # endpoints that are read with a POST request (e.g. a download) give the
   # method and body in the config
   out$method <- ep$method %||% "GET"
+  out$template <- ep$template
+  headers <- list()
   if (out$method == "POST") {
     curl::handle_setopt(handle, post = TRUE, postfields = ep$body %||% "")
-    curl::handle_setheaders(handle, "Content-Type" = ep$content_type %||% "application/json")
+    headers[["Content-Type"]] <- ep$content_type %||% "application/json"
   }
+  # endpoints that need a login are only checked when there is a token
+  if (isTRUE(ep$auth)) {
+    out$auth <- TRUE
+    if (!nzchar(ices_token())) {
+      out$skipped <- "needs an ICES login: set ICES_TOKEN, or log in with icesConnect"
+      return(out)
+    }
+    headers[["Authorization"]] <- paste("Bearer", ices_token())
+  }
+  if (length(headers)) do.call(curl::handle_setheaders, c(list(handle), headers))
   resp <- tryCatch(curl::curl_fetch_memory(url, handle = handle), error = function(e) e)
   if (inherits(resp, "error")) {
     out$error <- conditionMessage(resp)
@@ -79,6 +114,10 @@ check_endpoint <- function(api, ep) {
   }
 
   out$http_status <- resp$status_code
+  if (isTRUE(ep$auth) && resp$status_code == 401) {
+    out$error <- "the ICES token was refused (HTTP 401): it may have expired. Update the ICES_TOKEN repository secret"
+    return(out)
+  }
   out$content_type <- if (length(resp$type) && !is.na(resp$type)) sub(";.*$", "", resp$type) else ""
   out$time_s <- round(resp$times[["total"]], 2)
   out$size_bytes <- length(resp$content)
@@ -129,7 +168,8 @@ results <- lapply(seq_along(configs), function(i) {
     segs <- relative_segments(e$url, base_path)
     matched <- vapply(ops, function(o) if (o$method == e$method) match_operation(segs, relative_segments(o$full_path, base_path)) else 0, 0)
     if (!any(matched > 0)) {
-      path <- sub("^https?://[^/]+", "", sub("[?#].*$", "", e$url))
+      # the config can give the path with its parameters, e.g. effortmap/{ecoregion}
+      path <- if (!is.null(e$template)) paste0(base_path, "/", e$template) else sub("^https?://[^/]+", "", sub("[?#].*$", "", e$url))
       ops[[paste(e$method, path)]] <- list(method = e$method, path = path, full_path = path,
                                            parameters = list(), undocumented = TRUE)
     }
@@ -181,13 +221,20 @@ results <- lapply(seq_along(configs), function(i) {
   # baseline
   baseline_file <- file.path(dirname(config_files[i]), "baseline.json")
   if (update_baseline && (!length(update_ids) || api$id %in% update_ids)) {
+    # endpoints that were not checked keep the structure recorded before
+    old <- if (file.exists(baseline_file)) fromJSON(baseline_file, simplifyVector = FALSE)$endpoints else list()
+    old <- setNames(old, vapply(old, `[[`, "", "name"))
     baseline <- list(
       recorded = now(),
-      endpoints = lapply(endpoints, function(e) {
+      endpoints = Filter(Negate(is.null), lapply(endpoints, function(e) {
+        if (!is.null(e$skipped)) {
+          msg(api$id, ": ", e$name, " not checked, ", if (is.null(old[[e$name]])) "not in the baseline" else "keeping its baseline")
+          return(old[[e$name]])
+        }
         e <- e[c("name", "url", "http_status", "content_type", "fields")]
         if (!is.null(e$fields)) e$fields <- lapply(e$fields, I)
         e
-      }),
+      })),
       spec = if (!is.null(spec$operations)) lapply(spec$operations, function(o) o[c("method", "path", "parameters")])
     )
     writeLines(toJSON(baseline, auto_unbox = TRUE, pretty = TRUE, null = "null"), baseline_file)
@@ -198,7 +245,9 @@ results <- lapply(seq_along(configs), function(i) {
 
   endpoints <- lapply(endpoints, function(e) {
     b <- baseline_eps[[e$name]]
-    if (!is.null(e$error)) {
+    if (!is.null(e$skipped)) {
+      e$status <- "not checked"
+    } else if (!is.null(e$error)) {
       e$status <- "error"
     } else if (is.null(b)) {
       e$status <- "no baseline"
@@ -232,6 +281,7 @@ results <- lapply(seq_along(configs), function(i) {
     packages = I(unlist(api$packages)),
     notes = api$notes,
     baseline_recorded = baseline$recorded,
+    token_expires = if (any(vapply(endpoints, function(e) isTRUE(e$auth) && is.null(e$skipped), logical(1)))) token_expiry(ices_token()),
     health = if (any(status == "error")) "error" else if (any(status %in% c("changed", "no baseline")) || spec_problem) "warning" else "ok",
     endpoints = endpoints,
     spec = spec,

@@ -161,8 +161,8 @@ endpoint_table <- function(api) {
   }))
 }
 
-api_status_colour <- c(ok = "success", changed = "warning", "no baseline" = "secondary", error = "danger")
-api_status_label <- c(ok = "No changes", changed = "Changed", "no baseline" = "No baseline", error = "Error")
+api_status_colour <- c(ok = "success", changed = "warning", "no baseline" = "secondary", "not checked" = "secondary", error = "danger")
+api_status_label <- c(ok = "No changes", changed = "Changed", "no baseline" = "No baseline", "not checked" = "Not checked", error = "Error")
 
 # write markdown from a chunk with results: asis
 md <- function(...) cat(..., "\n\n", sep = "")

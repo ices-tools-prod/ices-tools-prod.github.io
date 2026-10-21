@@ -1,0 +1,117 @@
+{
+  "id": "vms",
+  "name": "VMS and Logbook Database",
+  "description": "VMS and logbook data, data call summaries, fisheries overview and WGFBIT products, c-squares and gear lookup tables, from the ICES VMS and Logbook Database.",
+  "base_url": "https://data.ices.dk/vms/api",
+  "website": "https://data.ices.dk/vms",
+  "docs": "https://data.ices.dk/vms/webservices",
+  "packages": ["icesVMS"],
+  "notes": [
+    {
+      "topic": "Login",
+      "observation": "Most endpoints need an ICES token (HTTP 401 without one): VMS and logbook data, effort and landings summaries, the effort map, the passive gear footprint and the WGFBIT datasets. `gearwidths`, `MetierLookup`, `csquares`, `vmssummary` and the SAR map are open.",
+      "affects": "These endpoints are checked only when a token is available (the `ICES_TOKEN` environment variable, or the token stored by icesConnect); otherwise they are shown as not checked. icesVMS sends a token for `vmssummary` and the SAR map too, although they do not need one."
+    },
+    {
+      "topic": "Documentation",
+      "observation": "The operations are listed on an HTML page, with no machine-readable description (no OpenAPI), so the operations and parameters are not checked. The paths in the documentation mix case (`API/GearWidths`, `api/gearwidths`); the service ignores case.",
+      "affects": "Nothing at present."
+    },
+    {
+      "topic": "Effort summaries",
+      "observation": "The documentation lists `FisheriesOverviews/effort/{EcoRegion}`, kW fishing hours by country, year and gear category. `get_fo_effort()`, documented as returning kW fishing hours by country and year, calls `fisheriesoverviews/effortmap/{ecoregion}` instead, which is the effort map by c-square (about 24 MB for the Celtic Seas).",
+      "affects": "`get_fo_effort()` returns the effort map rather than the effort summary, and no function calls `fisheriesoverviews/effort`."
+    },
+    {
+      "topic": "WGFBIT filters",
+      "observation": "`wgfbit/dataset1` and `wgfbit/dataset3` accept `fishing_category` or `benthis_metier`, but return HTTP 400 when both are given (e.g. `wgfbit/dataset3/2020?fishing_category=Dredge&benthis_metier=DRB_MOL`).",
+      "affects": "`get_wgfbit_data1()` and `get_wgfbit_data3()` return NULL, with a message, when both `fishing_category` and `benthis_metier` are given."
+    },
+    {
+      "topic": "Swept area ratio by metier",
+      "observation": "`getSARBy_YearAndMetier4_GeoJSON/{Year}/{Metier4}` returns HTTP 500, including for the example in the documentation (`2022/OTT`); `getSARBy_YearAndMetier4_Shapefile` returns a zip file. `FisheriesOverviews/fishingactivity/{EcoRegion}` also returns HTTP 500.",
+      "affects": "`get_sar()` is deprecated and points users to the GeoJSON endpoint, which does not work."
+    },
+    {
+      "topic": "Size of responses",
+      "observation": "VMS and logbook data are returned for a whole country and year, and month, gear and metier are filtered in R: `GetVMSData/DK?year=2021` is about 180 MB. `wgfbit/dataset3/{year}` without filters is about 200 MB.",
+      "affects": "`get_vms()` and `get_wgfbit_data3()` can be slow and use a lot of memory."
+    },
+    {
+      "topic": "Empty results",
+      "observation": "An ecoregion or year with no data returns HTTP 200 with `[]` (e.g. `fisheriesoverviews/sarmap/Azores?year=2020`). An unknown screening session returns HTTP 204 with no content from `getScreeningDetails`, and `[]` from `getScreeningSessionMessages`; these two are not checked here, as they need a session of the user's own.",
+      "affects": "Functions return empty results rather than an error for a wrong ecoregion or year."
+    },
+    {
+      "topic": "Screening files",
+      "observation": "`ScreenVMSFile` (POST, a file upload) screens a VMS or logbook file, and `SendFileToQC/{ID}` sends a screened file on. They change data and are not called by this check.",
+      "affects": "`screen_vms_file()` is not checked."
+    }
+  ],
+  "endpoints": [
+    { "name": "gearwidths", "path": "gearwidths" },
+    { "name": "MetierLookup", "path": "MetierLookup" },
+    { "name": "csquares, by rectangle", "path": "csquares?stat_rec=40F1" },
+    { "name": "vmssummary", "path": "vmssummary" },
+    { "name": "vmssummary, by data call", "path": "vmssummary/2024", "template": "vmssummary/{datacall}" },
+    {
+      "name": "fisheriesoverviews/sarmap",
+      "path": "fisheriesoverviews/sarmap/Oceanic%20Northeast%20Atlantic?year=2020",
+      "template": "fisheriesoverviews/sarmap/{ecoregion}"
+    },
+    {
+      "name": "fisheriesoverviews/effortmap",
+      "path": "fisheriesoverviews/effortmap/Azores?year=2020",
+      "template": "fisheriesoverviews/effortmap/{ecoregion}",
+      "auth": true
+    },
+    {
+      "name": "fisheriesoverviews/effort",
+      "path": "fisheriesoverviews/effort/Azores",
+      "template": "fisheriesoverviews/effort/{ecoregion}",
+      "auth": true
+    },
+    {
+      "name": "fisheriesoverviews/landings",
+      "path": "fisheriesoverviews/landings/Azores",
+      "template": "fisheriesoverviews/landings/{ecoregion}",
+      "auth": true
+    },
+    {
+      "name": "footprint/passive",
+      "path": "footprint/passive/Baltic%20Sea/2020",
+      "template": "footprint/passive/{ecoregion}/{year}",
+      "auth": true
+    },
+    {
+      "name": "wgfbit/dataset1",
+      "path": "wgfbit/dataset1/Norwegian%20Sea/2020?benthis_metier=OT_DMF",
+      "template": "wgfbit/dataset1/{ecoregion}/{year}",
+      "auth": true
+    },
+    {
+      "name": "wgfbit/dataset2",
+      "path": "wgfbit/dataset2/Norwegian%20Sea/2020",
+      "template": "wgfbit/dataset2/{ecoregion}/{year}",
+      "auth": true
+    },
+    {
+      "name": "wgfbit/dataset3",
+      "path": "wgfbit/dataset3/2020?benthis_metier=TBB_MOL",
+      "template": "wgfbit/dataset3/{year}",
+      "auth": true
+    },
+    {
+      "name": "GetVMSData",
+      "path": "GetVMSData/LV?year=2021",
+      "template": "GetVMSData/{country}",
+      "auth": true
+    },
+    {
+      "name": "GetLogbookData",
+      "path": "GetLogbookData/EE?year=2021",
+      "template": "GetLogbookData/{country}",
+      "auth": true
+    }
+  ]
+}

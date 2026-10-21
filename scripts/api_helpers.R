@@ -404,6 +404,8 @@ map_functions <- function(packages, ops, base_path) {
       found <- character(0)
       for (s in unique(o$strings)) {
         if (!grepl("[A-Za-z]", s) || grepl("\\s", trimws(s))) next
+        # a string of placeholders only, e.g. glue("{service}/{id}"), matches anything
+        if (!grepl("[A-Za-z]", gsub("\\{[^}]*\\}|%[-0-9.]*[sidfx]", "", s))) next
         score <- vapply(op_segments, match_operation, 0, r_segments = relative_segments(s, base_path))
         if (any(score > 0)) {
           # several operations can match a string with placeholders, e.g. get%sdata

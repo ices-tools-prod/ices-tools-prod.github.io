@@ -1,0 +1,320 @@
+{
+  "recorded": "2026-10-21T09:39:10Z",
+  "endpoints": [
+    {
+      "name": "gearwidths",
+      "url": "https://data.ices.dk/vms/api/gearwidths",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].avFspeed": ["string (number)"],
+        "[].avKw": ["string (number)"],
+        "[].avLoa": ["string (number)"],
+        "[].benthisMet": ["string"],
+        "[].contactModel": ["string"],
+        "[].firstFactor": ["number"],
+        "[].gearCoefficient": ["string"],
+        "[].gearModel": ["string"],
+        "[].gearWidth": ["number"],
+        "[].id": ["number"],
+        "[].secondFactor": ["number"],
+        "[].subsurfaceProp": ["string (number)"]
+      }
+    },
+    {
+      "name": "MetierLookup",
+      "url": "https://data.ices.dk/vms/api/MetierLookup",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].benthisMetiers": ["null", "string"],
+        "[].benthisMetiers2016Wrong": ["null", "string"],
+        "[].description": ["string"],
+        "[].ecomarClassification": ["null", "string"],
+        "[].fishingCategory": ["string"],
+        "[].fishingCategoryFo": ["string"],
+        "[].fishingHours": ["null"],
+        "[].id": ["number"],
+        "[].jnccGrouping": ["null", "string"],
+        "[].leMetLevel6": ["string"],
+        "[].metierLevel4": ["string"],
+        "[].metierLevel5": ["string"]
+      }
+    },
+    {
+      "name": "csquares, by rectangle",
+      "url": "https://data.ices.dk/vms/api/csquares?stat_rec=40F1",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].csquare_area": ["number"],
+        "[].ecoregion": ["string"],
+        "[].ices_area": ["string"],
+        "[].id": ["number"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].stat_rec": ["string"],
+        "[].wkt": ["string"]
+      }
+    },
+    {
+      "name": "vmssummary",
+      "url": "https://data.ices.dk/vms/api/vmssummary",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].country": ["string"],
+        "[].lastUpdate": ["string (date-time)"],
+        "[].noRecs": ["number"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "vmssummary, by data call",
+      "url": "https://data.ices.dk/vms/api/vmssummary/2024",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].country": ["string"],
+        "[].lastUpdate": ["string (date-time)"],
+        "[].noRecs": ["number"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "fisheriesoverviews/sarmap",
+      "url": "https://data.ices.dk/vms/api/fisheriesoverviews/sarmap/Oceanic%20Northeast%20Atlantic?year=2020",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].csquare_area": ["number"],
+        "[].ecoregion": ["string"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].stat_rec": ["string", "string (number)"],
+        "[].subsurface_sar": ["number"],
+        "[].surface_sar": ["number"],
+        "[].wkt": ["string"]
+      }
+    },
+    {
+      "name": "fisheriesoverviews/effortmap",
+      "url": "https://data.ices.dk/vms/api/fisheriesoverviews/effortmap/Azores?year=2020",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].ecoregion": ["string"],
+        "[].fishing_category_FO": ["null", "string"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].mw_fishinghours": ["number"],
+        "[].stat_rec": ["string"],
+        "[].wkt": ["string"]
+      }
+    },
+    {
+      "name": "fisheriesoverviews/effort",
+      "url": "https://data.ices.dk/vms/api/fisheriesoverviews/effort/Azores",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].country": ["string"],
+        "[].ecoregion": ["string"],
+        "[].gear_category": ["null", "string"],
+        "[].kw_fishing_hours": ["number"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "fisheriesoverviews/landings",
+      "url": "https://data.ices.dk/vms/api/fisheriesoverviews/landings/Azores",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].country": ["string"],
+        "[].ecoregion": ["string"],
+        "[].gear_category": ["null", "string"],
+        "[].totweight": ["number"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "footprint/passive",
+      "url": "https://data.ices.dk/vms/api/footprint/passive/Baltic%20Sea/2020",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].ecoregion": ["string"],
+        "[].kw_fishinghours": ["number"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].stat_rec": ["string"],
+        "[].wkt": ["string"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "wgfbit/dataset1",
+      "url": "https://data.ices.dk/vms/api/wgfbit/dataset1/Norwegian%20Sea/2020?benthis_metier=OT_DMF",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].csquare_area": ["number"],
+        "[].ecoregion": ["string"],
+        "[].gear_category": ["string"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].mw_fishinghours": ["number"],
+        "[].stat_rec": ["string"],
+        "[].subsurface_sar": ["number"],
+        "[].surface_sar": ["number"],
+        "[].total_value": ["number"],
+        "[].total_weight": ["number"],
+        "[].wkt": ["string"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "wgfbit/dataset2",
+      "url": "https://data.ices.dk/vms/api/wgfbit/dataset2/Norwegian%20Sea/2020",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].csquare_area": ["number"],
+        "[].ecoregion": ["string"],
+        "[].lat": ["number"],
+        "[].lE_MET_level6": ["string"],
+        "[].lon": ["number"],
+        "[].mw_fishinghours": ["number"],
+        "[].stat_rec": ["string"],
+        "[].subsurface_sar": ["number"],
+        "[].surface_sar": ["number"],
+        "[].total_value": ["number"],
+        "[].total_weight": ["number"],
+        "[].vessel_length_category": ["string"],
+        "[].wkt": ["string"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "wgfbit/dataset3",
+      "url": "https://data.ices.dk/vms/api/wgfbit/dataset3/2020?benthis_metier=TBB_MOL",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].c_square": ["string"],
+        "[].csquare_area": ["number"],
+        "[].gear_category": ["string"],
+        "[].lat": ["number"],
+        "[].lon": ["number"],
+        "[].month": ["number"],
+        "[].mw_fishinghours": ["number"],
+        "[].stat_rec": ["string (number)"],
+        "[].subsurface_sar": ["number"],
+        "[].surface_sar": ["number"],
+        "[].total_value": ["number"],
+        "[].total_weight": ["number"],
+        "[].wkt": ["string"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "GetVMSData",
+      "url": "https://data.ices.dk/vms/api/GetVMSData/LV?year=2021",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].anonVessels": ["string"],
+        "[].averageInterval": ["number"],
+        "[].avgFishingSpeed": ["number"],
+        "[].avgGearWidth": ["null"],
+        "[].avgKw": ["number"],
+        "[].avgOal": ["number"],
+        "[].country": ["string"],
+        "[].cSquare": ["string"],
+        "[].depthRange": ["string"],
+        "[].fishingHours": ["number"],
+        "[].gearCode": ["string"],
+        "[].habitatType": ["string"],
+        "[].icesAvgFishingSpeed": ["null"],
+        "[].id": ["string"],
+        "[].importDate": ["string (date-time)"],
+        "[].kwFishinghours": ["number"],
+        "[].leMetLevel6": ["string"],
+        "[].month": ["number"],
+        "[].numberOfRecords": ["number"],
+        "[].recordtype": ["string"],
+        "[].sessionId": ["number"],
+        "[].sweptArea": ["number"],
+        "[].totvalue": ["number"],
+        "[].totweight": ["number"],
+        "[].uniqueVessels": ["number"],
+        "[].vesselLengthCategory": ["string"],
+        "[].year": ["number"]
+      }
+    },
+    {
+      "name": "GetLogbookData",
+      "url": "https://data.ices.dk/vms/api/GetLogbookData/EE?year=2021",
+      "http_status": 200,
+      "content_type": "application/json",
+      "fields": {
+        "(root)": ["array"],
+        "[]": ["object"],
+        "[].anonVessels": ["string"],
+        "[].country": ["string"],
+        "[].fishingDays": ["number"],
+        "[].gearCode": ["string"],
+        "[].icesRectangle": ["string"],
+        "[].id": ["string"],
+        "[].importDate": ["string (date-time)"],
+        "[].kwFishingDays": ["number"],
+        "[].lE_MET_level5": ["string"],
+        "[].leMetLevel6": ["string"],
+        "[].month": ["number"],
+        "[].recordtype": ["string"],
+        "[].totvalue": ["number"],
+        "[].totweight": ["number"],
+        "[].uniqueVessels": ["number"],
+        "[].vesselLengthCategory": ["string"],
+        "[].vmsEnabled": ["string"],
+        "[].year": ["number"]
+      }
+    }
+  ],
+  "spec": null
+}

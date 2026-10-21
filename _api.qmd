@@ -21,6 +21,7 @@ md("Base url: `", api$base_url, "`",
 md("Checked ", updated(apis), ". ",
    if (!is.null(api$baseline_recorded)) paste0("Responses are compared with the baseline recorded on ", substr(api$baseline_recorded, 1, 10), ".")
    else "There is no baseline yet, so changes can not be detected.")
+if (!is.null(api$token_expires)) md("Endpoints that need a login are checked with an ICES token that expires on ", substr(api$token_expires, 1, 10), ".")
 ```
 
 ## Used by
@@ -73,7 +74,8 @@ changes <- unlist(lapply(api$endpoints, function(e) {
   vapply(e$changes, function(ch) paste0("**", e$name, "**: ", ch$text), "")
 }))
 errors <- unlist(lapply(api$endpoints, function(e) if (!is.null(e$error)) paste0("**", e$name, "**: ", e$error)))
-md_list(c(errors, changes), empty = "No changes: every endpoint returns the same structure as the baseline.")
+skipped <- unlist(lapply(api$endpoints, function(e) if (!is.null(e$skipped)) paste0("**", e$name, "**: not checked, ", e$skipped)))
+md_list(c(errors, changes, skipped), empty = "No changes: every endpoint returns the same structure as the baseline.")
 ```
 
 ## Documented operations
@@ -148,6 +150,7 @@ for (e in api$endpoints) {
   md("`", e$url, "`")
   if (length(e$functions)) md("Called by: ", paste0("`", unlist(e$functions), "()`", collapse = ", "))
   if (!is.null(e$operation)) md("Operation: `", e$operation, "`")
+  if (isTRUE(e$auth)) md("Needs an ICES login.")
   info <- c(
     if (!is.null(e$http_status)) paste("HTTP", e$http_status),
     if (!is.null(e$content_type) && nzchar(e$content_type)) e$content_type,

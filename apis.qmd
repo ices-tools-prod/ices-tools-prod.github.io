@@ -24,14 +24,15 @@ md_table(
   do.call(rbind, lapply(apis$apis, function(a) {
     eps <- endpoint_table(a)
     users <- api_packages(a, status)
-    n <- table(factor(eps$status, levels = c("ok", "changed", "no baseline", "error")))
+    n <- table(factor(eps$status, levels = c("ok", "changed", "no baseline", "not checked", "error")))
     data.frame(
       API = sprintf("[%s](api/%s.html)", a$name, a$id),
       Status = as.character(badge(
         c(ok = "No changes", warning = "Changes found", error = "Errors")[[a$health]],
         c(ok = "success", warning = "warning", error = "danger")[[a$health]]
       )),
-      Endpoints = sprintf("%d: %d unchanged, %d changed, %d with errors", nrow(eps), n[["ok"]], n[["changed"]], n[["error"]]),
+      Endpoints = paste0(sprintf("%d: %d unchanged, %d changed, %d with errors", nrow(eps), n[["ok"]], n[["changed"]], n[["error"]]),
+                         if (n[["not checked"]]) sprintf(", %d not checked", n[["not checked"]])),
       `Median time (s)` = median(eps$time_s, na.rm = TRUE),
       `R functions` = {
         read_ops <- Filter(function(o) !isTRUE(o$writes), a$operations)
@@ -52,7 +53,9 @@ Each web service has a folder in
 [apis/](https://github.com/ices-tools-prod/ices-tools-prod.github.io/tree/main/apis),
 with a `config.json` that lists its endpoints, its documentation, and notes
 shown on its page. For each endpoint, give a path with example query values
-that return a stable result, such as a published assessment.
+that return a stable result, such as a published assessment. Endpoints that
+need an ICES login are marked `"auth": true`, and are only checked when an
+ICES token is available.
 
 ## Accepting a change
 

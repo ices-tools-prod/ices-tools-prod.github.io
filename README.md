@@ -26,7 +26,18 @@ by its id (e.g. `apis/sag/`), containing:
   it, notes shown in a table on its page, and the endpoints to check. Each
   endpoint has a path with example query values, which should return a
   stable result (for example a published assessment), and the R functions
-  that call it.
+  that call it. An endpoint can also give:
+  - `"auth": true` if it needs an ICES login. It is then called with an
+    ICES token, taken from the `ICES_TOKEN` environment variable or, if that
+    is not set, the token stored by
+    [icesConnect](https://github.com/ices-tools-prod/icesConnect). Without
+    a token the endpoint is shown as not checked, and recording a baseline
+    keeps its previous one. In the GitHub Action the token is the
+    `ICES_TOKEN` repository secret (see below);
+  - `"template"`: its path with parameters in braces, such as
+    `footprint/passive/{ecoregion}/{year}`, for APIs with no OpenAPI
+    description, so that the operation is named by it rather than by the
+    example values.
 - `baseline.json`: the recorded structure of each endpoint's response, and
   the documented operations and parameters.
 
@@ -56,6 +67,18 @@ git add apis/sag/baseline.json
 ```
 
 Without an id, the baselines of all APIs are updated.
+
+## The ICES token
+
+The `ICES_TOKEN` repository secret is a personal ICES token, which expires
+after a few weeks. The page of each API that uses it shows when it expires;
+once it has expired, the endpoints that need a login are reported as errors.
+To update it, log in at <https://data.ices.dk/token>, set the token in R as
+shown there, and run:
+
+```sh
+Rscript -e 'cat(icesConnect::ices_token())' | gh secret set ICES_TOKEN --repo ices-tools-prod/ices-tools-prod.github.io
+```
 
 ## Files
 

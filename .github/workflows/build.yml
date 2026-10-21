@@ -40,6 +40,8 @@ jobs:
         run: quarto render
         env:
           GH_TOKEN: ${{ github.token }}
+          # optional: an ICES token, for the web service endpoints that need a login
+          ICES_TOKEN: ${{ secrets.ICES_TOKEN }}
 
       - uses: actions/configure-pages@v6
 
