@@ -119,7 +119,10 @@ two parts:
 
 So a push that only changes the pages or how they show the data (the
 `.qmd` files, `R/status.R`, `_quarto.yml`) is published in a minute or two,
-without checking the web services again. The status collected for each
+without checking the web services again. The render runs in the
+[`rocker/r-ver`](https://rocker-project.org) container, which has R
+installed, and the R packages are cached between runs; the cache is renewed
+each month and whenever the workflow file changes. The status collected for each
 package is:
 
 - **GitHub**: version in `DESCRIPTION` on the default branch, maintainer,

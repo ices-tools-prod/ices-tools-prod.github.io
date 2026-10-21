@@ -8,6 +8,10 @@
 # and on runs by hand with "refresh data" ticked. Other pushes, such as
 # changes to the pages or their layout, only render the site, with the data
 # from the latest run that collected it.
+#
+# The site is rendered in the rocker/r-ver container, which has R installed,
+# and the R packages are cached between runs (the cache is renewed each
+# month, and when this file changes), which saves about half a minute.
 
 name: Build status page
 
@@ -34,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       refresh: ${{ steps.check.outputs.refresh }}
+      data-run: ${{ steps.check.outputs.data-run }}
+      month: ${{ steps.check.outputs.month }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -45,6 +51,7 @@ jobs:
           EVENT: ${{ github.event_name }}
           REFRESH: ${{ inputs.refresh }}
           BEFORE: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           # files that change the data collected, rather than how it is shown
           data_files='^(packages\.json|apis/|scripts/(build_status|check_apis|api_helpers)\.R)'
@@ -59,13 +66,33 @@ jobs:
           else
             refresh=false
           fi
+          # without new data, the render uses the data saved by the latest run
+          # that collected it; if there is none, it is collected now
+          if [ "$refresh" = false ]; then
+            data_run=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=status-data&per_page=100" \
+              -q '[.artifacts[] | select(.expired | not)] | sort_by(.created_at) | last | .workflow_run.id // empty')
+            if [ -n "$data_run" ]; then
+              echo "data-run=$data_run" >> "$GITHUB_OUTPUT"
+              echo "using the data from run $data_run"
+            else
+              echo "no saved data found, so it is collected"
+              refresh=true
+            fi
+          fi
           echo "refresh=$refresh" >> "$GITHUB_OUTPUT"
           echo "refresh data: $refresh"
+          # the R package caches are renewed each month
+          echo "month=$(date +%Y-%m)" >> "$GITHUB_OUTPUT"
 
   data:
     needs: changes
     if: needs.changes.outputs.refresh == 'true'
+    # on the runner rather than in the container, as build_status.R uses the
+    # GitHub CLI
     runs-on: ubuntu-latest
+    env:
+      R_PACKAGES: jsonlite curl xml2
+      R_LIBS_USER: ${{ github.workspace }}/../R-library
     steps:
       - uses: actions/checkout@v7
 
@@ -73,8 +100,18 @@ jobs:
         with:
           use-public-rspm: true
 
+      - id: r
+        run: echo "version=$(Rscript -e 'cat(format(getRversion()))')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: r-data-${{ steps.r.outputs.version }}-${{ needs.changes.outputs.month }}-${{ hashFiles('.github/workflows/build.yml') }}
+
       - name: Install R packages
-        run: Rscript -e 'install.packages(c("jsonlite", "curl", "xml2"))'
+        run: |
+          mkdir -p "$R_LIBS_USER"
+          Rscript -e 'p <- strsplit(Sys.getenv("R_PACKAGES"), " ")[[1]]; p <- setdiff(p, rownames(installed.packages())); if (length(p)) install.packages(p, lib = Sys.getenv("R_LIBS_USER"))'
 
       - name: Collect package status
         run: Rscript scripts/build_status.R
@@ -100,6 +137,10 @@ jobs:
     # render when the data was collected, or was not needed
     if: ${{ !cancelled() && needs.changes.result == 'success' && (needs.data.result == 'success' || needs.data.result == 'skipped') }}
     runs-on: ubuntu-latest
+    container: rocker/r-ver:4.6
+    env:
+      R_PACKAGES: jsonlite curl xml2 knitr rmarkdown htmltools reactable
+      R_LIBS_USER: /__w/R-library
     # one deployment at a time; a newer run waits rather than cancelling one
     # that is publishing new data
     concurrency:
@@ -120,35 +161,45 @@ jobs:
 
       - name: Get data from the latest run that collected it
         if: needs.data.result == 'skipped'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          run_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=status-data&per_page=100" \
-            -q '[.artifacts[] | select(.expired | not)] | sort_by(.created_at) | last | .workflow_run.id // empty')
-          if [ -n "$run_id" ]; then
-            gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name status-data --dir data/
-            echo "using the data from run $run_id"
-          else
-            echo "::warning::no saved data found, so it is collected while rendering"
-          fi
-
-      - uses: r-lib/actions/setup-r@v2
+        uses: actions/download-artifact@v8
         with:
-          use-public-rspm: true
+          name: status-data
+          path: data/
+          run-id: ${{ needs.changes.outputs.data-run }}
+          github-token: ${{ github.token }}
 
+      - id: r
+        run: echo "version=$(Rscript -e 'cat(format(getRversion()))')" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: r-render-${{ steps.r.outputs.version }}-${{ needs.changes.outputs.month }}-${{ hashFiles('.github/workflows/build.yml') }}
+
+      # the container has binary packages from the Posit Package Manager
       - name: Install R packages
-        run: Rscript -e 'install.packages(c("jsonlite", "curl", "xml2", "knitr", "rmarkdown", "htmltools", "reactable"))'
+        run: |
+          mkdir -p "$R_LIBS_USER"
+          Rscript -e 'p <- strsplit(Sys.getenv("R_PACKAGES"), " ")[[1]]; p <- setdiff(p, rownames(installed.packages())); if (length(p)) install.packages(p, lib = Sys.getenv("R_LIBS_USER"))'
 
-      - uses: quarto-dev/quarto-actions/setup@v2
+      # quarto-actions/setup installs with sudo, which the container does not
+      # have: install the latest release from its archive instead
+      - name: Install Quarto
+        run: |
+          Rscript -e '
+            v <- jsonlite::fromJSON("https://quarto.org/docs/download/_download.json")$version
+            f <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/quarto-dev/quarto-cli/releases/download/v%s/quarto-%s-linux-amd64.tar.gz", v, v), f, quiet = TRUE)
+            untar(f, exdir = "/opt")
+            file.rename(sprintf("/opt/quarto-%s", v), "/opt/quarto")'
+          echo "/opt/quarto/bin" >> "$GITHUB_PATH"
 
       # the pre-render scripts in _quarto.yml use the data in data/, however
-      # old it is; they only collect it if it is missing
+      # old it is
       - name: Render site
         run: quarto render
         env:
           STATUS_REFRESH: "false"
-          GH_TOKEN: ${{ github.token }}
-          ICES_TOKEN: ${{ secrets.ICES_TOKEN }}
 
       - uses: actions/configure-pages@v6
 
